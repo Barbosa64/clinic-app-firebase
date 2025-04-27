@@ -2,13 +2,14 @@ import { useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import Navbar from './components/Navbar';
-
+import Home from './pages/Home';
 function App() {
 	const [count, setCount] = useState(0);
 
 	return (
 		<>
 			<Navbar />
+			<Home />
 			<div>
 				<a href='https://vite.dev' target='_blank'>
 					<img src={viteLogo} className='logo' alt='Vite logo' />
@@ -30,4 +31,5 @@ function App() {
 }
 
 Navbar();
+
 export default App;
