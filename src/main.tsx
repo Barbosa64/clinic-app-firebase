@@ -1,11 +1,27 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import App from './App';
-
+import Login from './pages/Login';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './styles/global.css';
+import './lib/firebase';
 
-createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById('root')!).render(
+	<React.StrictMode>
+		<Router>
+			<Routes>
+				<Route path='/' element={<App />} />
+				<Route path='/login' element={<Login />} />
+
+				<Route path='*' element={<Navigate to='/' />} />
+			</Routes>
+		</Router>
+	</React.StrictMode>,
+);
+
+/*createRoot(document.getElementById('root')!).render(
 	<StrictMode>
 		<App />
 	</StrictMode>,
 );
+*/
