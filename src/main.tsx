@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import Login from './pages/Login';
+import Signup from './pages/Signup';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './styles/global.css';
 import './lib/firebase';
@@ -12,6 +13,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 			<Routes>
 				<Route path='/' element={<App />} />
 				<Route path='/login' element={<Login />} />
+				<Route path='/signup' element={<Signup />} />
 
 				<Route path='*' element={<Navigate to='/' />} />
 			</Routes>
