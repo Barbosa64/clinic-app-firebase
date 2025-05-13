@@ -33,12 +33,12 @@ export default function Register() {
 			<form onSubmit={handleSubmit}>
 				<input type='email' placeholder='Email' value={email} onChange={e => setEmail(e.target.value)} />
 				<br />
-				<input type='password' placeholder='Senha' value={senha} onChange={e => setSenha(e.target.value)} />
+				<input type='password' placeholder='Password' value={senha} onChange={e => setSenha(e.target.value)} />
 				<br />
-				<input type='password' placeholder='Confirmar senha' value={confirmarSenha} onChange={e => setConfirmarSenha(e.target.value)} />
+				<input type='password' placeholder='Confirmar password' value={confirmarSenha} onChange={e => setConfirmarSenha(e.target.value)} />
 				<br />
 				{erro && <p style={{ color: 'red' }}>{erro}</p>}
-				<button type='submit'>Registrar</button>
+				<button type='submit'>Registar</button>
 			</form>
 		</div>
 	);
