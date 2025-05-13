@@ -8,10 +8,10 @@ const patients = [
 
 export default function SidebarPatients() {
 	return (
-		<aside className='w-64 bg-white border-r p-4'>
+		<aside className='w-full sm:w-64 bg-white p-4 sm:static fixed bottom-0 sm:bottom-auto sm:left-0 z-50 sm:z-auto'>
 			<h2 className='text-xl font-bold mb-4'>Pacientes</h2>
-			<input type='text' placeholder='Search...' className='mb-4 p-2 w-full border rounded' />
-			<ul className='space-y-4'>
+			<input type='text' placeholder='Buscar...' className='mb-4 p-2 w-full border rounded' />
+			<ul className='space-y-4 overflow-y-auto max-h-64 sm:max-h-none'>
 				{patients.map((patient, index) => (
 					<li key={index} className='flex items-center space-x-4'>
 						<img src={patient.imageUrl} alt={patient.name} className='h-10 w-10 rounded-full' />

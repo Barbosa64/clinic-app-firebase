@@ -2,8 +2,8 @@ import React from 'react';
 
 export default function PatientProfileCard() {
 	return (
-		<div className='bg-white p-4 rounded shadow text-center'>
-			<img className='mx-auto h-24 w-24 rounded-full' src='https://randomuser.me/api/portraits/women/3.jpg' alt='Patient' />
+		<div className='bg-white p-4 rounded shadow text-center max-w-sm w-full mx-auto sm:max-w-md lg:max-w-lg'>
+			<img className='mx-auto h-24 w-24 rounded-full object-cover' src='https://randomuser.me/api/portraits/women/3.jpg' alt='Patient' />
 			<h3 className='mt-2 text-lg font-semibold'>Jessica Taylor</h3>
 			<p className='text-gray-500 text-sm'>Feminino, 28</p>
 			<div className='mt-4 space-y-2 text-sm text-gray-600'>
@@ -11,7 +11,7 @@ export default function PatientProfileCard() {
 				<p>📞 Contacto: 923304192</p>
 				<p>🏥 Insurance: Sunrise Health</p>
 			</div>
-			<button className='mt-4 px-4 py-2 bg-teal-500 text-white rounded'>Mostrar toda a informação</button>
+			<button className='mt-4 px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition'>Mostrar toda a informação</button>
 		</div>
 	);
 }
