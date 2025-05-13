@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Navbar from './components/Navbar';
+import Navbar from './layouts/Navbar';
 import PatientsLista from './pages/admin/Patients';
 import ScheduleAppointment from './pages/_ScheduleAppointment';
 
