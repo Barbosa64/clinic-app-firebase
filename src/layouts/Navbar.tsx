@@ -17,7 +17,7 @@ const Navbar = () => {
 		{ name: 'Médicos', href: '/medicos', current: location.pathname === '/medicos' },
 		{ name: 'Pacientes', href: '/pacientes', current: location.pathname === '/pacientes' },
 		{ name: 'Marcar consulta', href: '/marcar-consulta', current: location.pathname === '/marcar-consulta' },
-		{ name: 'Calendário', href: '/calendario', current: location.pathname === '/calendario' },
+		{ name: 'Agenda', href: '/agenda', current: location.pathname === '/agenda' },
 	];
 
 	const handleSignOut = async () => {

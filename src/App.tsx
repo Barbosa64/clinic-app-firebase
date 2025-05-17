@@ -7,6 +7,7 @@ import Signup from './pages/Signup';
 import AuthRoute from './pages/AuthRoute';
 import TeamList from './pages/admin/doctor/data/_TeamList';
 import PatientList from './pages/patient/data/PatientLista';
+import Agenda from './pages/doctor/Agenda';
 
 function App() {
 	const location = useLocation();
@@ -48,6 +49,14 @@ function App() {
 					element={
 						<AuthRoute>
 							<ScheduleAppointment />
+						</AuthRoute>
+					}
+				/>
+				<Route
+					path='/agenda'
+					element={
+						<AuthRoute>
+							<Agenda />
 						</AuthRoute>
 					}
 				/>
