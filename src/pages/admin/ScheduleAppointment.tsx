@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import React from 'react';
 
-const specialties = ['Cardiologia', 'Dermatologia', 'Pediatria', 'Ortopedia'];
+const specialties = ['Cardiologia', 'Dermatologia', 'Pediatria', 'Ortopedia', 'Ginecologia', 'Clinica Geral'];
 
 const doctors = [
 	{ name: 'Dr. Ana Silva', specialty: 'Cardiologia' },
-	{ name: 'Dr. João Souza', specialty: 'Dermatologia' },
+	{ name: 'Dr. João Sousa', specialty: 'Dermatologia' },
 	{ name: 'Dra. Paula Lima', specialty: 'Pediatria' },
-	{ name: 'Dr. Marcos Castro', specialty: 'Ortopedia' },
+	{ name: 'Dr. Marco Castro', specialty: 'Ortopedia' },
+	{ name: 'Dra. Anabela Pereira', specialty: 'Ginecologia' },
+	{ name: 'Dr. Roberto Henriques', specialty: 'Clinica Geral' },
 ];
 
 export default function ScheduleAppointment() {
