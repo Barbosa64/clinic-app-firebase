@@ -19,23 +19,29 @@ export default function ScheduleAppointment() {
 
 	const availableDoctors = doctors.filter(doc => doc.specialty === selectedSpecialty);
 
-	const handleSubmit = async (e: React.FormEvent) => {
+	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
+
+		if (!selectedSpecialty || !selectedDoctor) {
+			alert('Por favor, selecione especialidade e médico.');
+			return;
+		}
 
 		setStatus('loading');
 
 		try {
-			const response = await fetch('', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					doctor: selectedDoctor,
-					specialty: selectedSpecialty,
-					timestamp: new Date().toISOString(),
-				}),
-			});
+			// Pega nas consultas já salvas, ou cria array vazio
+			const existingAppointments = JSON.parse(localStorage.getItem('appointments') || '[]');
 
-			if (!response.ok) throw new Error('Erro ao enviar');
+			// Cria nova consulta
+			const newAppointment = {
+				doctor: selectedDoctor,
+				specialty: selectedSpecialty,
+				timestamp: new Date().toISOString(),
+			};
+
+			// Guarda no localStorage
+			localStorage.setItem('appointments', JSON.stringify([...existingAppointments, newAppointment]));
 
 			setStatus('success');
 			alert('Consulta marcada com sucesso!');

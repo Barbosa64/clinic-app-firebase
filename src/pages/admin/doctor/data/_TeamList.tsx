@@ -19,6 +19,7 @@ function saveDoctorToLocalStorage(doctor: DoctorFormData) {
 }
 
 export default function TeamList() {
+	const specialties = ['Cardiologia', 'Dermatologia', 'Pediatria', 'Ortopedia', 'Ginecologia', 'Clinica Geral'];
 	const auth = getAuth();
 	const navigate = useNavigate();
 
@@ -42,9 +43,17 @@ export default function TeamList() {
 
 	const openModal = () => {
 		setShowModal(true);
+		setNewDoctor({
+			id: '',
+			name: '',
+			email: '',
+			password: '',
+			specialty: '',
+			imageUrl: 'https://via.placeholder.com/150/000000/FFFFFF/?text=Doctor',
+		});
 	};
 
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 		const { name, value } = e.target;
 		setNewDoctor(prev => ({ ...prev, [name]: value }));
 	};
@@ -52,6 +61,12 @@ export default function TeamList() {
 	const handleCancel = () => {
 		setShowModal(false);
 		setError('');
+	};
+
+	const handleDeleteDoctor = (id: string) => {
+		const updatedDoctors = doctors.filter(doctor => doctor.id !== id);
+		setDoctors(updatedDoctors);
+		localStorage.setItem('doctors', JSON.stringify(updatedDoctors));
 	};
 
 	const signUpWithEmail = async () => {
@@ -86,7 +101,7 @@ export default function TeamList() {
 			// Atualiza estado para atualizar a lista na UI
 			setDoctors(prev => [...prev, doctorToSave]);
 
-			// Fecha modal e reseta formulário
+			// Fecha modal e dá reset no formulário
 			setShowModal(false);
 			setNewDoctor({
 				id: '',
@@ -123,11 +138,17 @@ export default function TeamList() {
 							<p className='text-sm text-gray-500'>{doctor.specialty}</p>
 							<p className='text-xs text-gray-400'>{doctor.email}</p>
 						</div>
+						<button
+							onClick={() => handleDeleteDoctor(doctor.id)}
+							className='ml-auto text-red-600 hover:text-white border border-red-600 hover:bg-red-600 rounded px-3 py-1 text-sm font-semibold transition-colors duration-200'
+						>
+							Eliminar
+						</button>
 					</li>
 				))}
 			</ul>
 
-			{/* Modal */}
+			{/* Janela criação de médico */}
 			{showModal && (
 				<div className='fixed inset-0 z-40 flex justify-center items-center p-4 bg-black bg-opacity-50'>
 					<div className='bg-white p-6 rounded-lg shadow-xl w-full max-w-md z-50'>
@@ -186,15 +207,14 @@ export default function TeamList() {
 								<label htmlFor='specialty' className='block text-sm font-medium text-gray-700'>
 									Especialidade
 								</label>
-								<input
-									type='text'
-									name='specialty'
-									id='specialty'
-									value={newDoctor.specialty}
-									onChange={handleInputChange}
-									className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
-									required
-								/>
+								<select name='specialty' id='specialty' className='border w-full p-2 rounded' value={newDoctor.specialty} onChange={handleInputChange} required>
+									<option value=''>Selecione uma especialidade</option>
+									{specialties.map(spec => (
+										<option key={spec} value={spec}>
+											{spec}
+										</option>
+									))}
+								</select>
 							</div>
 							<div>
 								<label htmlFor='imageUrl' className='block text-sm font-medium text-gray-700'>
