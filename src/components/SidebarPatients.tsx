@@ -1,9 +1,9 @@
 import React from 'react';
 
 const patients = [
-	{ name: 'Emily Williams', gender: 'Female', age: 18, imageUrl: 'https://randomuser.me/api/portraits/women/1.jpg' },
-	{ name: 'Ryan Johnson', gender: 'Male', age: 45, imageUrl: 'https://randomuser.me/api/portraits/men/2.jpg' },
-	{ name: 'Jessica Taylor', gender: 'Female', age: 28, imageUrl: 'https://randomuser.me/api/portraits/women/3.jpg' },
+	{ name: 'Marta Gonçalves', gender: 'Female', age: 18, imageUrl: 'https://randomuser.me/api/portraits/women/1.jpg' },
+	{ name: 'André Fonseca', gender: 'Male', age: 45, imageUrl: 'https://randomuser.me/api/portraits/men/2.jpg' },
+	{ name: 'Jessica Silva', gender: 'Female', age: 36, imageUrl: 'https://randomuser.me/api/portraits/women/2.jpg' },
 ];
 
 export default function SidebarPatients() {

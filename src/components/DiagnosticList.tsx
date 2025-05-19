@@ -1,8 +1,8 @@
 import React from 'react';
 
 const diagnostics = [
-	{ problem: 'Hipertensão', description: 'Chronic high blood pressure', status: 'Sob observação' },
-	{ problem: 'Type 2 Diabetes', description: 'Resistência à insulina', status: 'Curado' },
+	{ problem: 'Hipertensão', description: 'Pressão alta crônica', status: 'Sob observação' },
+	{ problem: 'Diabetes Tipo 2', description: 'Resistência à insulina', status: 'Curado' },
 	{ problem: 'Asma', description: 'Broncoconstrição', status: 'Inativo' },
 ];
 
