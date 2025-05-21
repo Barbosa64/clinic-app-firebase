@@ -1,122 +1,41 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-
-interface DoctorFormData {
-	id: string;
-	name: string;
-	email: string;
-	password?: string;
-	specialty: string;
-	imageUrl: string;
-}
-
-// Guardar médicos no localStorage
-function saveDoctorToLocalStorage(doctor: DoctorFormData) {
-	const existingDoctors = JSON.parse(localStorage.getItem('doctors') || '[]');
-	existingDoctors.push(doctor);
-	localStorage.setItem('doctors', JSON.stringify(existingDoctors));
-}
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../../../../lib/firebase';
 
 export default function TeamList() {
-	const specialties = ['Cardiologia', 'Dermatologia', 'Pediatria', 'Ortopedia', 'Ginecologia', 'Clinica Geral'];
 	const auth = getAuth();
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+	const [role, setRole] = useState<'doctor'>('doctor');
 	const navigate = useNavigate();
 
-	const [doctors, setDoctors] = useState<DoctorFormData[]>(() => {
-		const storedDoctors = localStorage.getItem('doctors');
-		return storedDoctors ? JSON.parse(storedDoctors) : [];
-	});
-
 	const [showModal, setShowModal] = useState(false);
-	const [newDoctor, setNewDoctor] = useState<DoctorFormData>({
-		id: '',
-		name: '',
-		email: '',
-		password: '',
-		specialty: '',
-		imageUrl: 'https://via.placeholder.com/150/000000/FFFFFF/?text=Doctor',
-	});
 
 	const [error, setError] = useState('');
-	const [authing, setAuthing] = useState(false);
 
 	const openModal = () => {
 		setShowModal(true);
-		setNewDoctor({
-			id: '',
-			name: '',
-			email: '',
-			password: '',
-			specialty: '',
-			imageUrl: 'https://via.placeholder.com/150/000000/FFFFFF/?text=Doctor',
-		});
 	};
-
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-		const { name, value } = e.target;
-		setNewDoctor(prev => ({ ...prev, [name]: value }));
-	};
-
 	const handleCancel = () => {
 		setShowModal(false);
 		setError('');
 	};
 
-	const handleDeleteDoctor = (id: string) => {
-		const updatedDoctors = doctors.filter(doctor => doctor.id !== id);
-		setDoctors(updatedDoctors);
-		localStorage.setItem('doctors', JSON.stringify(updatedDoctors));
-	};
-
-	const signUpWithEmail = async () => {
-		if (!newDoctor.email || !newDoctor.password) {
-			setError('Email e senha são obrigatórios.');
-			return;
-		}
-		if (!newDoctor.name || !newDoctor.specialty) {
-			setError('Nome e especialidade são obrigatórios.');
-			return;
-		}
-
-		setAuthing(true);
+	const handleSignup = async () => {
 		setError('');
-
 		try {
-			// Cria Doutor no Firebase Auth
-			const userCredential = await createUserWithEmailAndPassword(auth, newDoctor.email, newDoctor.password!);
-			const userId = userCredential.user.uid;
+			const { user } = await createUserWithEmailAndPassword(auth, email, password);
 
-			// Objeto do médico para salvar localmente
-			const doctorToSave = {
-				...newDoctor,
-				id: userId,
-				password: undefined, // não guardar a senha no localStorage
-				imageUrl: newDoctor.imageUrl || 'https://via.placeholder.com/150/000000/FFFFFF/?text=Doctor',
-			};
-
-			// Salva no localStorage
-			saveDoctorToLocalStorage(doctorToSave);
-
-			// Atualiza estado para atualizar a lista na UI
-			setDoctors(prev => [...prev, doctorToSave]);
-
-			// Fecha modal e dá reset no formulário
-			setShowModal(false);
-			setNewDoctor({
-				id: '',
-				name: '',
-				email: '',
-				password: '',
-				specialty: '',
-				imageUrl: 'https://via.placeholder.com/150/000000/FFFFFF/?text=Doctor',
+			await setDoc(doc(db, 'users', user.uid), {
+				UID: user.uid,
+				role: role,
 			});
 
 			navigate('/');
 		} catch (err: any) {
-			setError(err.message || 'Erro ao criar usuário.');
-		} finally {
-			setAuthing(false);
+			setError('Falhou o registo: ' + err.message);
 		}
 	};
 
@@ -130,22 +49,15 @@ export default function TeamList() {
 			</div>
 
 			<ul className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-				{doctors.map(doctor => (
-					<li key={doctor.id} className='bg-white p-4 rounded shadow flex items-center space-x-4'>
-						<img src={doctor.imageUrl || 'https://via.placeholder.com/64'} alt={doctor.name} className='h-16 w-16 rounded-full object-cover' />
-						<div>
-							<p className='font-semibold'>{doctor.name}</p>
-							<p className='text-sm text-gray-500'>{doctor.specialty}</p>
-							<p className='text-xs text-gray-400'>{doctor.email}</p>
-						</div>
-						<button
-							onClick={() => handleDeleteDoctor(doctor.id)}
-							className='ml-auto text-red-600 hover:text-white border border-red-600 hover:bg-red-600 rounded px-3 py-1 text-sm font-semibold transition-colors duration-200'
-						>
-							Eliminar
-						</button>
-					</li>
-				))}
+				<li className='bg-white p-4 rounded shadow flex items-center space-x-4'>
+					<img src='https://via.placeholder.com/64' alt='Doctor name' className='h-16 w-16 rounded-full object-cover' />
+					<div>
+						<p className='font-semibold'>Nome</p>
+						<p className='text-sm text-gray-500'>Especialidade</p>
+						<p className='text-xs text-gray-400'>Email</p>
+					</div>
+					<button className='ml-auto text-red-600 hover:text-white border border-red-600 hover:bg-red-600 rounded px-3 py-1 text-sm font-semibold transition-colors duration-200'>Eliminar</button>
+				</li>
 			</ul>
 
 			{/* Janela criação de médico */}
@@ -157,7 +69,6 @@ export default function TeamList() {
 						<form
 							onSubmit={e => {
 								e.preventDefault();
-								signUpWithEmail();
 							}}
 							className='space-y-4'
 						>
@@ -169,8 +80,6 @@ export default function TeamList() {
 									type='text'
 									name='name'
 									id='name'
-									value={newDoctor.name}
-									onChange={handleInputChange}
 									className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
 									required
 								/>
@@ -183,9 +92,9 @@ export default function TeamList() {
 									type='email'
 									name='email'
 									id='email'
-									value={newDoctor.email}
-									onChange={handleInputChange}
 									className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+									value={email}
+									onChange={e => setEmail(e.target.value)}
 									required
 								/>
 							</div>
@@ -197,23 +106,25 @@ export default function TeamList() {
 									type='password'
 									name='password'
 									id='password'
-									value={newDoctor.password}
-									onChange={handleInputChange}
 									className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+									value={password}
+									onChange={e => setPassword(e.target.value)}
 									required
 								/>
+							</div>
+							<div>
+								<select value={role} onChange={e => setRole(e.target.value as 'doctor')} className='bg-black border border-white text-white py-3 px-2 rounded mt-2'>
+									<option className='bg-black' value='doctor'>
+										Doutor
+									</option>
+								</select>
 							</div>
 							<div>
 								<label htmlFor='specialty' className='block text-sm font-medium text-gray-700'>
 									Especialidade
 								</label>
-								<select name='specialty' id='specialty' className='border w-full p-2 rounded' value={newDoctor.specialty} onChange={handleInputChange} required>
+								<select name='specialty' id='specialty' className='border w-full p-2 rounded' required>
 									<option value=''>Selecione uma especialidade</option>
-									{specialties.map(spec => (
-										<option key={spec} value={spec}>
-											{spec}
-										</option>
-									))}
 								</select>
 							</div>
 							<div>
@@ -224,8 +135,6 @@ export default function TeamList() {
 									type='url'
 									name='imageUrl'
 									id='imageUrl'
-									value={newDoctor.imageUrl}
-									onChange={handleInputChange}
 									placeholder='https://exemplo.com/imagem.jpg'
 									className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
 								/>
@@ -236,16 +145,15 @@ export default function TeamList() {
 									type='button'
 									onClick={handleCancel}
 									className='px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-									disabled={authing}
 								>
 									Cancelar
 								</button>
 								<button
+									onClick={handleSignup}
 									type='submit'
-									disabled={authing}
 									className='px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 border border-transparent rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
 								>
-									{authing ? 'Criando...' : 'Criar Médico'}
+									'Criar Médico'
 								</button>
 							</div>
 						</form>

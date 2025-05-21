@@ -24,7 +24,7 @@ const Signup = () => {
 
 			navigate('/');
 		} catch (err: any) {
-			setError(err.message);
+			setError('Falhou o registo: ' + err.message);
 		}
 	};
 
