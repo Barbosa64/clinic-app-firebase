@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext'; // Certifique-se que este path está correto
 
 type Props = {
 	children: JSX.Element;
@@ -7,31 +7,28 @@ type Props = {
 };
 
 export default function ProtectedRoute({ children, allowedRoles }: Props) {
-	const { user, role } = useAuth();
+	// 'loading'
+	const authContext = useAuth();
 
-	if (!user) return <Navigate to='/login' replace />;
-	if (!allowedRoles.includes(role || '')) return <Navigate to='/login' replace />;
-
-	return children;
-}
-
-/* import { Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-
-interface ProtectedRouteProps {
-	children: JSX.Element;
-	requiredRole: 'admin' | 'client' | 'doctor';
-}
-
-export default function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
-	const { user, role, loading } = useAuth();
-
-	if (loading) return <p>Loading...</p>;
-
-	if (!user || role !== requiredRole) {
+	if (!authContext) {
 		return <Navigate to='/login' replace />;
+	}
+
+	const { user, role, loading } = authContext;
+
+	// Se estiver a carregar, mostra uma mensagem ou retorna null para não renderizar nada
+	if (loading) {
+		return <p>A carregar autenticação...</p>;
+	}
+
+	if (!user) {
+		return <Navigate to='/login' replace />;
+	}
+
+	if (!allowedRoles.includes(role || '')) {
+		console.warn(`Acesso negado para o role: ${role}. Rota requer: ${allowedRoles.join(', ')}`);
+		return <Navigate to='/' replace />; // Ou '/login' ou uma página de 'acesso negado'
 	}
 
 	return children;
 }
-*/

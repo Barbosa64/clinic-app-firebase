@@ -46,7 +46,7 @@ function AppRoutes() {
 				<Route
 					path='/agenda'
 					element={
-						<ProtectedRoute allowedRoles={['admin, doctor']}>
+						<ProtectedRoute allowedRoles={["admin", "doctor"]}>
 							<Agenda />
 						</ProtectedRoute>
 					}
@@ -54,7 +54,7 @@ function AppRoutes() {
 				<Route
 					path='/medicos'
 					element={
-						<ProtectedRoute allowedRoles={['admin, doctor']}>
+						<ProtectedRoute allowedRoles={["admin", "doctor"]}>
 							<TeamList />
 						</ProtectedRoute>
 					}
