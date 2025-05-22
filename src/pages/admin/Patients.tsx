@@ -1,5 +1,5 @@
 import SidebarPatients from '../../components/SidebarPatients';
-import DiagnosisHistory from '../../components/DiagnosisHistory';
+import DiagnosisHistory from '../../components/AppointmentsHistory';
 import PatientQuickStats from '../../components/PatientQuickStats';
 import DiagnosticList from '../../components/DiagnosticList';
 import PatientProfileCard from '../../components/PatientProfileCard';

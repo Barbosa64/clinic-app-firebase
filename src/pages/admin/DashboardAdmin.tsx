@@ -1,4 +1,4 @@
-import SidebarAdmin from './SidebarAdmin';
+/*import SidebarAdmin from './SidebarAdmin';
 
 export default function DashboardAdmin() {
 	return (
@@ -12,3 +12,4 @@ export default function DashboardAdmin() {
 		</div>
 	);
 }
+*/

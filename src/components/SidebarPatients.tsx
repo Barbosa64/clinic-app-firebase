@@ -33,6 +33,7 @@ export default function SidebarPatients() {
 	const filteredPatients = patients.filter(patient => patient.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
 	return (
+		//<main className='flex-1 p-6 bg-gray-100'>
 		<ul role='list' className='rounded-3xl bg-white divide-y divide-gray-100'>
 			<li className='flex justify-between items-center gap-x-6 p-5'>
 				<h2 className='text-2xl font-medium'>Patients</h2>
@@ -51,6 +52,7 @@ export default function SidebarPatients() {
 					</li>
 				))}
 			</ul>
-		</ul>
+			</ul>
+		//</main>
 	);
 }
