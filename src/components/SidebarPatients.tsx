@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../lib/firebase'; 
+import { db } from '../lib/firebase';
 import { Patient } from '../pages/patient/data/types';
 
 // Definindo a estrutura de um paciente
@@ -12,7 +12,7 @@ export default function SidebarPatients() {
 	useEffect(() => {
 		const fetchPatients = async () => {
 			try {
-				const q = query(collection(db, 'users'), where('role', '==', 'pacient'));
+				const q = query(collection(db, 'users'), where('role', '==', 'patient'));
 				const querySnapshot = await getDocs(q);
 				const fetchedPatients: Patient[] = querySnapshot.docs.map(doc => ({
 					id: doc.id,
