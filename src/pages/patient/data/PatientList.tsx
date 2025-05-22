@@ -1,5 +1,8 @@
 import React from 'react';
-import { patients } from './_PatientList';
+import { Patient } from './types';
+import { db } from '../../../lib/firebase';
+
+
 
 export default function PatientList() {
 	return (
@@ -20,6 +23,7 @@ export default function PatientList() {
 		</div>
 	);
 }
+
 
 /* import React, { useState, useEffect } from 'react';
 

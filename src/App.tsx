@@ -7,9 +7,8 @@ import ScheduleAppointment from './pages/admin/ScheduleAppointment';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import TeamList from './pages/admin/doctor/data/_TeamList';
-import PatientList from './pages/patient/data/PatientLista';
 import Agenda from './pages/doctor/Agenda';
-
+import PatientList from './pages/patient/data/PatientList';
 import ProtectedRoute from './routes/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 
