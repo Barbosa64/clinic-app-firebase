@@ -1,44 +1,80 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
+import { collection, query, where, getDocs, DocumentData } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
 type Appointment = {
 	id: string;
-	date: string;
-	time: string;
-	doctor: string;
-	location: string;
+	date: Date;
+	doctorId: string;
+	doctorName?: string;
+	specialty?: string;
 };
 
-const pastAppointments: Appointment[] = [
-	{
-		id: '1',
-		date: '2024-12-10',
-		time: '10:30',
-		doctor: 'Dr. João Silva',
-		location: 'Clínica Central',
-	},
-	{
-		id: '2',
-		date: '2024-11-01',
-		time: '14:00',
-		doctor: 'Dra. Maria Costa',
-		location: 'Hospital São José',
-	},
-];
+type Props = {
+	patientId: string;
+};
 
-const upcomingAppointments: Appointment[] = [
-	{
-		id: '3',
-		date: '2025-06-01',
-		time: '09:00',
-		doctor: 'Dr. Carlos Mendes',
-		location: 'Clínica Saúde Mais',
-	},
-];
+export default function AppointmentsHistory({ patientId }: Props) {
+	const [pastAppointments, setPastAppointments] = useState<Appointment[]>([]);
+	const [upcomingAppointments, setUpcomingAppointments] = useState<Appointment[]>([]);
+	const [loading, setLoading] = useState(true);
 
-export default function AppointmentsHistory() {
+	useEffect(() => {
+		const fetchAppointments = async () => {
+			try {
+				const q = query(collection(db, 'Appointments'), where('patientId', '==', patientId));
+				const querySnapshot = await getDocs(q);
+
+				const now = new Date();
+				const upcoming: Appointment[] = [];
+				const past: Appointment[] = [];
+
+				for (const docSnap of querySnapshot.docs) {
+					const data = docSnap.data() as DocumentData;
+					const apptDate = data.date.toDate(); // CORREÇÃO AQUI
+
+					// Buscar dados do médico
+					const doctorDoc = await getDoc(doc(db, 'users', data.doctorId));
+					const doctorData = doctorDoc.exists() ? doctorDoc.data() : null;
+
+					const appointment: Appointment = {
+						id: docSnap.id,
+						date: apptDate,
+						doctorId: data.doctorId,
+						doctorName: doctorData?.name || 'Desconhecido',
+						specialty: doctorData?.specialty || 'N/A',
+					};
+
+					if (apptDate >= now) {
+						upcoming.push(appointment);
+					} else {
+						past.push(appointment);
+					}
+				}
+
+				// Sort by date
+				upcoming.sort((a, b) => a.date.getTime() - b.date.getTime());
+				past.sort((a, b) => b.date.getTime() - a.date.getTime());
+
+				setUpcomingAppointments(upcoming);
+				setPastAppointments(past);
+			} catch (error) {
+				console.error('Erro ao buscar consultas:', error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		if (patientId) {
+			fetchAppointments();
+		}
+	}, [patientId]);
+
+	if (loading) return <p className='text-center'>Carregando consultas...</p>;
+
 	return (
 		<div className='bg-white p-4 rounded shadow space-y-6'>
-			{/* Próximas Consultas */}
 			<section>
 				<h2 className='text-lg font-semibold mb-2'>📅 Próximas Consultas</h2>
 				{upcomingAppointments.length === 0 ? (
@@ -46,15 +82,15 @@ export default function AppointmentsHistory() {
 				) : (
 					<ul className='space-y-3'>
 						{upcomingAppointments.map(appt => (
-							<li key={appt.id} className='border p-3 rounded hover:bg-gray-50'>
+							<li key={appt.id} className='border p-3 rounded'>
 								<p>
-									<strong>Data:</strong> {appt.date} às {appt.time}
+									<strong>Data:</strong> {appt.date.toLocaleString()}
 								</p>
 								<p>
-									<strong>Médico:</strong> {appt.doctor}
+									<strong>Médico:</strong> {appt.doctorName}
 								</p>
 								<p>
-									<strong>Local:</strong> {appt.location}
+									<strong>Especialidade:</strong> {appt.specialty}
 								</p>
 							</li>
 						))}
@@ -62,7 +98,6 @@ export default function AppointmentsHistory() {
 				)}
 			</section>
 
-			{/* Histórico de Consultas */}
 			<section>
 				<h2 className='text-lg font-semibold mb-2'>🕓 Histórico de Consultas</h2>
 				{pastAppointments.length === 0 ? (
@@ -70,14 +105,16 @@ export default function AppointmentsHistory() {
 				) : (
 					<ul className='space-y-3'>
 						{pastAppointments.map(appt => (
-							<li key={appt.id} className='border p-3 rounded hover:bg-gray-50'>
+							<li key={appt.id} className='border p-3 rounded'>
 								<p>
-									<strong>Data:</strong> {appt.date} às {appt.time}
+									<strong>Data:</strong> {appt.date.toLocaleString()}
 								</p>
 								<p>
-									<strong>Médico:</strong> {appt.doctor}
+									<strong>Médico:</strong> {appt.doctorName}
 								</p>
-								
+								<p>
+									<strong>Especialidade:</strong> {appt.specialty}
+								</p>
 							</li>
 						))}
 					</ul>

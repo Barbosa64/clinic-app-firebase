@@ -1,5 +1,5 @@
 import SidebarPatients from '../../components/SidebarPatients';
-import DiagnosisHistory from '../../components/AppointmentsHistory';
+import AppointmentsHistory from '../../components/AppointmentsHistory';
 import PatientQuickStats from '../../components/PatientQuickStats';
 import DiagnosticList from '../../components/DiagnosticList';
 import PatientProfileCard from '../../components/PatientProfileCard';
@@ -13,7 +13,7 @@ export default function PatientsPage() {
 			<SidebarPatients />
 			<main className='flex-1 p-6 grid grid-cols-3 gap-4'>
 				<section className='col-span-2 space-y-4'>
-					<DiagnosisHistory />
+					<AppointmentsHistory patientId={id} />
 					<PatientQuickStats />
 					<DiagnosticList />
 				</section>
