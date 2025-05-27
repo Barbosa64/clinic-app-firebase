@@ -34,7 +34,7 @@ export default function AppointmentsHistory({ patientId }: Props) {
 					const data = docSnap.data() as DocumentData;
 					const apptDate = data.date.toDate(); // CORREÇÃO AQUI
 
-					// Buscar dados do médico
+					
 					const doctorDoc = await getDoc(doc(db, 'users', data.doctorId));
 					const doctorData = doctorDoc.exists() ? doctorDoc.data() : null;
 
