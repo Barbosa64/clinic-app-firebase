@@ -9,7 +9,7 @@ const diagnostics = [
 export default function DiagnosticList() {
 	return (
 		<div className='bg-white p-4 rounded shadow overflow-x-auto'>
-			<h2 className='text-lg font-semibold mb-4'>Lista de Diagnóstico</h2>
+			<h2 className='text-lg font-semibold mb-4'>Receitas Médicas</h2>
 			<table className='w-full min-w-[600px] text-left'>
 				<thead>
 					<tr className='text-gray-500 text-sm'>

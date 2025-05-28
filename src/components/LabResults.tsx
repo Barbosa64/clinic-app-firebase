@@ -1,8 +1,7 @@
 // src/components/LabResults.tsx
 import React, { useEffect, useState } from 'react';
-import { db, storage } from '../lib/firebase';
+import { db } from '../lib/firebase';
 import { collection, query, where, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { useAuth } from '../context/AuthContext';
 
 interface LabResult {
@@ -15,14 +14,17 @@ interface LabResult {
 }
 
 const LabResults: React.FC = () => {
-	const { user, role } = useAuth(); // ✅ extraímos também o `role`
+	const { user, role } = useAuth();
 	const [labResults, setLabResults] = useState<LabResult[]>([]);
 	const [file, setFile] = useState<File | null>(null);
 	const [labType, setLabType] = useState('');
-	const [loading, setLoading] = useState(false);
+	const [selectedPatientId, setSelectedPatientId] = useState('');
 
-	// 🔁 Troque por lógica real de seleção se aplicável
-	const selectedPatientId = role === 'patient' && user ? user.uid : 'SELECIONAR_PACIENTE';
+	useEffect(() => {
+		if (role === 'patient' && user) {
+			setSelectedPatientId(user.uid);
+		}
+	}, [user, role]);
 
 	const fetchResults = async () => {
 		if (!user || !selectedPatientId) return;
@@ -51,56 +53,33 @@ const LabResults: React.FC = () => {
 			return;
 		}
 
-		setLoading(true);
-
 		try {
-			const timestamp = Date.now();
-			const fileName = `${timestamp}_${file.name}`;
-			const filePath = `${selectedPatientId}/${labType}/${fileName}`;
-			console.log('Iniciando upload para:', filePath);
+			const fileUrl = URL.createObjectURL(file);
+			const timestamp = new Date().toISOString();
 
-			const fileRef = ref(storage, filePath);
-
-			
-			const uploadResult = await uploadBytes(fileRef, file);
-			console.log('Upload concluído:', uploadResult);
-
-			
-			const url = await getDownloadURL(fileRef);
-			console.log('URL obtida:', url);
-
-			// Adiciona documento no Firestore
-			const docRef = await addDoc(collection(db, 'LabResults'), {
+			// Simula criação de documento apenas localmente (sem storage)
+			const fakeId = `${Date.now()}`;
+			const newResult: LabResult = {
+				id: fakeId,
 				patientId: selectedPatientId,
-				uploadedBy: user?.uid,
-				fileName,
-				fileUrl: url,
-				uploadDate: new Date().toISOString(),
-				labType,
-				status: 'Disponível',
-			});
+				fileName: file.name,
+				fileUrl,
+				uploadAt: timestamp,
+				type: labType,
+			};
 
-			console.log('Documento Firestore criado com ID:', docRef.id);
+			// Adiciona ao estado local (você pode salvar no Firestore se quiser)
+			setLabResults(prev => [...prev, newResult]);
 
 			setFile(null);
 			setLabType('');
-			fetchResults();
 		} catch (err) {
-			console.error('Erro ao fazer upload:', err);
-		} finally {
-			setLoading(false);
+			console.error('Erro ao processar arquivo:', err);
 		}
 	};
 
-
-	const handleDelete = async (result: LabResult) => {
-		try {
-			await deleteDoc(doc(db, 'LabResults', result.id));
-			await deleteObject(ref(storage, `${result.patientId}/${result.fileName}`));
-			fetchResults();
-		} catch (err) {
-			console.error('Erro ao apagar:', err);
-		}
+	const handleDelete = (id: string) => {
+		setLabResults(prev => prev.filter(result => result.id !== id));
 	};
 
 	return (
@@ -111,8 +90,8 @@ const LabResults: React.FC = () => {
 				<div className='mb-6'>
 					<input type='text' placeholder='Tipo de exame' value={labType} onChange={e => setLabType(e.target.value)} className='border p-2 mr-2 rounded' />
 					<input type='file' onChange={e => setFile(e.target.files?.[0] || null)} className='mr-2' />
-					<button onClick={handleUpload} disabled={loading || !file || !labType} className='bg-teal-500 text-white px-4 py-2 rounded'>
-						{loading ? 'Enviando...' : 'Fazer upload'}
+					<button onClick={handleUpload} disabled={!file || !labType} className='bg-teal-500 text-white px-4 py-2 rounded'>
+						Fazer upload
 					</button>
 				</div>
 			)}
@@ -127,7 +106,7 @@ const LabResults: React.FC = () => {
 							</a>
 						</div>
 						{(role === 'doctor' || role === 'admin') && (
-							<button onClick={() => handleDelete(result)} className='text-red-500'>
+							<button onClick={() => handleDelete(result.id)} className='text-red-500'>
 								🗑️
 							</button>
 						)}
