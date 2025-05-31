@@ -66,9 +66,9 @@ const Login = () => {
 	return (
 		<div className='w-full h-screen flex'>
 			{/* Left Section */}
-			<div className='w-1/2 h-full flex flex-col bg-[#282c34]' items-center justify-center></div>
-
-			<div className='w-1/2 h-full bg-[#1a1a1a] flex flex-col p-20 justify-center'>
+			{/*<div className='w-1/2 h-full flex flex-col bg-[#282c34]' items-center justify-center></div> */}
+			<div className="w-1/2 h-full flex flex-col items-center justify-center bg-[url('../assets/17818.jpg')] bg-cover bg-center"></div>
+			<div className='w-1/2 h-full bg-teal-600 flex flex-col p-20 justify-center'>
 				<div className='w-full flex flex-col max-w-[450px] mx-auto'>
 					<div className='w-full flex flex-col mb-10 text-white'>
 						<h3 className='text-lg mb-4'>Bem vindo! Por favor insira seus dados para começar.</h3>
@@ -105,7 +105,7 @@ const Login = () => {
 				</div>
 
 				<div className='w-full flex items-center justify-center mt-10'>
-					<p className='text-sm font-normal text-gray-400'>
+					<p className='text-sm font-normal text-gray-800'>
 						Ainda não tem conta?
 						<span className='text-white ml-1 cursor-pointer' onClick={() => navigate('/signup')}>
 							Criar

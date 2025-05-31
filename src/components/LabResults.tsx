@@ -1,7 +1,8 @@
 // src/components/LabResults.tsx
 import React, { useEffect, useState } from 'react';
-import { db } from '../lib/firebase';
+import { db, storage } from '../lib/firebase';
 import { collection, query, where, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { useAuth } from '../context/AuthContext';
 
 interface LabResult {
@@ -19,7 +20,9 @@ const LabResults: React.FC = () => {
 	const [file, setFile] = useState<File | null>(null);
 	const [labType, setLabType] = useState('');
 	const [selectedPatientId, setSelectedPatientId] = useState('');
+	const [loading, setLoading] = useState(false);
 
+	// Define automaticamente o paciente se for um paciente logado
 	useEffect(() => {
 		if (role === 'patient' && user) {
 			setSelectedPatientId(user.uid);
@@ -42,44 +45,56 @@ const LabResults: React.FC = () => {
 	};
 
 	useEffect(() => {
-		if (user) {
+		if (selectedPatientId) {
 			fetchResults();
 		}
-	}, [user]);
+	}, [selectedPatientId]);
 
 	const handleUpload = async () => {
 		if (!file || !labType || selectedPatientId === '') {
-			console.warn('Falta o arquivo, tipo do exame ou paciente');
+			console.warn('Falta o arquivo, tipo do exame ou paciente selecionado');
 			return;
 		}
 
+		setLoading(true);
+
 		try {
-			const fileUrl = URL.createObjectURL(file);
-			const timestamp = new Date().toISOString();
+			const timestamp = Date.now();
+			const fileName = `${timestamp}_${file.name}`;
+			const filePath = `${selectedPatientId}/${labType}/${fileName}`;
+			const fileRef = ref(storage, filePath);
 
-			// Simula criação de documento apenas localmente (sem storage)
-			const fakeId = `${Date.now()}`;
-			const newResult: LabResult = {
-				id: fakeId,
+			await uploadBytes(fileRef, file);
+			const url = await getDownloadURL(fileRef);
+
+			const docRef = await addDoc(collection(db, 'LabResults'), {
 				patientId: selectedPatientId,
-				fileName: file.name,
-				fileUrl,
-				uploadAt: timestamp,
+				fileName,
+				fileUrl: url,
+				uploadAt: new Date().toISOString(),
 				type: labType,
-			};
+			});
 
-			// Adiciona ao estado local (você pode salvar no Firestore se quiser)
-			setLabResults(prev => [...prev, newResult]);
-
+			console.log('Arquivo salvo com ID:', docRef.id);
 			setFile(null);
 			setLabType('');
+			fetchResults();
 		} catch (err) {
-			console.error('Erro ao processar arquivo:', err);
+			console.error('Erro ao fazer upload:', err);
+		} finally {
+			setLoading(false);
 		}
 	};
 
-	const handleDelete = (id: string) => {
-		setLabResults(prev => prev.filter(result => result.id !== id));
+	const handleDelete = async (result: LabResult) => {
+		try {
+			await deleteDoc(doc(db, 'LabResults', result.id));
+			const filePath = `${result.patientId}/${result.type}/${result.fileName}`;
+			await deleteObject(ref(storage, filePath));
+			fetchResults();
+		} catch (err) {
+			console.error('Erro ao apagar:', err);
+		}
 	};
 
 	return (
@@ -90,8 +105,8 @@ const LabResults: React.FC = () => {
 				<div className='mb-6'>
 					<input type='text' placeholder='Tipo de exame' value={labType} onChange={e => setLabType(e.target.value)} className='border p-2 mr-2 rounded' />
 					<input type='file' onChange={e => setFile(e.target.files?.[0] || null)} className='mr-2' />
-					<button onClick={handleUpload} disabled={!file || !labType} className='bg-teal-500 text-white px-4 py-2 rounded'>
-						Fazer upload
+					<button onClick={handleUpload} disabled={loading || !file || !labType} className='bg-teal-500 text-white px-4 py-2 rounded'>
+						{loading ? 'Enviando...' : 'Fazer upload'}
 					</button>
 				</div>
 			)}
@@ -106,7 +121,7 @@ const LabResults: React.FC = () => {
 							</a>
 						</div>
 						{(role === 'doctor' || role === 'admin') && (
-							<button onClick={() => handleDelete(result.id)} className='text-red-500'>
+							<button onClick={() => handleDelete(result)} className='text-red-500'>
 								🗑️
 							</button>
 						)}
