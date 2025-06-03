@@ -42,13 +42,16 @@ export default function AppointmentsHistory({ patientId }: Props) {
 					}
 					q = query(collection(db, 'Appointments'), where('patientId', '==', patientId));
 				} else if (userData.role === 'doctor') {
-					q = query(collection(db, 'Appointments'), where('doctorId', '==', currentUser.uid));
+					if (patientId) {
+						q = query(collection(db, 'Appointments'), where('doctorId', '==', currentUser.uid), where('patientId', '==', patientId));
+					} else {
+						q = query(collection(db, 'Appointments'), where('doctorId', '==', currentUser.uid));
+					}
 				} else if (userData.role === 'admin') {
-					// Admin vê tudo, pode buscar tudo ou filtrar por paciente se quiser
 					if (patientId) {
 						q = query(collection(db, 'Appointments'), where('patientId', '==', patientId));
 					} else {
-						q = collection(db, 'Appointments'); // Pega todas as consultas
+						q = collection(db, 'Appointments');
 					}
 				} else {
 					setLoading(false);
