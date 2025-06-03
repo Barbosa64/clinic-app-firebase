@@ -14,7 +14,11 @@ interface LabResult {
 	type: string;
 }
 
-const LabResults: React.FC = () => {
+interface Props {
+	patientId?: string;
+}
+
+const LabResults: React.FC<Props> = ({ patientId }) => {
 	const { user, role } = useAuth();
 	const [labResults, setLabResults] = useState<LabResult[]>([]);
 	const [file, setFile] = useState<File | null>(null);
@@ -22,12 +26,13 @@ const LabResults: React.FC = () => {
 	const [selectedPatientId, setSelectedPatientId] = useState('');
 	const [loading, setLoading] = useState(false);
 
-	// Define automaticamente o paciente se for um paciente logado
 	useEffect(() => {
-		if (role === 'patient' && user) {
+		if (role === 'patient' && user?.uid) {
 			setSelectedPatientId(user.uid);
+		} else if ((role === 'doctor' || role === 'admin') && patientId) {
+			setSelectedPatientId(patientId);
 		}
-	}, [user, role]);
+	}, [user?.uid, role, patientId]);
 
 	const fetchResults = async () => {
 		if (!user || !selectedPatientId) return;
@@ -105,7 +110,16 @@ const LabResults: React.FC = () => {
 				<div className='mb-6'>
 					<input type='text' placeholder='Tipo de exame' value={labType} onChange={e => setLabType(e.target.value)} className='border p-2 mr-2 rounded' />
 					<input type='file' onChange={e => setFile(e.target.files?.[0] || null)} className='mr-2' />
-					<button onClick={handleUpload} disabled={loading || !file || !labType} className='bg-teal-500 text-white px-4 py-2 rounded'>
+					{process.env.NODE_ENV === 'development' && (
+						<pre className='text-xs text-gray-500'>
+							file: {file?.name ?? 'null'} | labType: {labType || 'vazio'} | selectedPatientId: {selectedPatientId || 'vazio'}
+						</pre>
+					)}
+					<button
+						onClick={handleUpload}
+						disabled={loading || !file || !labType || !selectedPatientId}
+						className={`px-4 py-2 rounded text-white ${loading || !file || !labType || !selectedPatientId ? 'bg-gray-300 cursor-not-allowed' : 'bg-teal-500 hover:bg-teal-600'}`}
+					>
 						{loading ? 'Enviando...' : 'Fazer upload'}
 					</button>
 				</div>

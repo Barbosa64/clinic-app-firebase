@@ -4,6 +4,7 @@ import { db } from '../lib/firebase';
 import { Patient } from '../pages/patient/data/types';
 import { useNavigate } from 'react-router-dom';
 
+
 // Definindo a estrutura de um paciente
 
 export default function SidebarPatients() {

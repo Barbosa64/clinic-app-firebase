@@ -22,7 +22,7 @@ export default function PatientsPage() {
 				</section>
 				<aside className='col-span-1 space-y-4'>
 					{id ? <PatientProfileCard id={id} /> : <p className='text-center'>Selecione um paciente</p>}
-					<LabResults />
+					<LabResults patientId={id || ''} />
 					{id && <FarmacoTest patientId={id} />}
 				</aside>
 			</main>
