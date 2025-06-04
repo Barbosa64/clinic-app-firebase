@@ -40,7 +40,7 @@ export default function PatientProfileCard({ id }: Props) {
 	if (!patient) return <p className='text-center mt-10 text-red-500'>Paciente não encontrado</p>;
 
 	return (
-		<div className='bg-white p-4 rounded shadow text-center max-w-sm w-full mx-auto sm:max-w-md lg:max-w-lg'>
+		<div className='bg-white p-4 rounded shadow text-center flex flex-col space-y-4 p-4'>
 			<img className='mx-auto h-24 w-24 rounded-full object-cover' src={patient.imageUrl || 'https://placehold.co/100x100?text=Avatar'} alt={patient.name} />
 			<h3 className='mt-2 text-lg font-semibold'>{patient.name}</h3>
 			<p className='text-gray-500 text-sm'>
