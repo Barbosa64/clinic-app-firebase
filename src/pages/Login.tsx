@@ -26,7 +26,7 @@ const Login = () => {
 			const userDoc = await getDoc(docRef);
 
 			if (!userDoc.exists()) {
-				throw new Error('Perfil de usuário não encontrado');
+				throw new Error('Perfil de utilizador não encontrado');
 			}
 
 			const userData = userDoc.data();
@@ -42,7 +42,7 @@ const Login = () => {
 			} else if (role === 'admin') {
 				navigate('/');
 			} else {
-				throw new Error('Tipo de usuário desconhecido.');
+				throw new Error('Tipo de utilizador desconhecido.');
 			}
 		} catch (error: any) {
 			console.error(error);
@@ -60,12 +60,11 @@ const Login = () => {
 			const response = await signInWithPopup(auth, new GoogleAuthProvider());
 			const uid = response.user.uid;
 
-			// Busca o perfil do usuário
 			const userRef = doc(db, 'users', uid);
 			const userSnap = await getDoc(userRef);
 
 			if (!userSnap.exists()) {
-				throw new Error('Perfil de usuário não encontrado');
+				throw new Error('Perfil de utilizador não encontrado');
 			}
 
 			const userData = userSnap.data();
@@ -77,11 +76,11 @@ const Login = () => {
 			if (role === 'patient') {
 				navigate(`/pacientes/${uid}`);
 			} else if (role === 'doctor') {
-				navigate('/');
+				navigate('/agenda');
 			} else if (role === 'admin') {
 				navigate('/');
 			} else {
-				throw new Error('Tipo de usuário desconhecido.');
+				throw new Error('Tipo de utilizador desconhecido.');
 			}
 		} catch (error: any) {
 			console.log(error);

@@ -39,7 +39,7 @@ export default function SidebarPatients() {
 	return (
 		<ul role='list' className='rounded-3xl bg-white divide-y divide-gray-100'>
 			<li className='flex justify-between items-center gap-x-6 p-5'>
-				<h2 className='text-2xl font-medium'>Patients</h2>
+				<h2 className='text-2xl font-medium'>Pacientes</h2>
 			</li>
 			<input type='text' placeholder='Procurar...' value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className='mb-4 p-2 w-full border rounded' />
 			<ul className='space-y-4 overflow-y-auto max-h-64 sm:max-h-none'>
