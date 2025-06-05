@@ -65,39 +65,46 @@ const Login = () => {
 
 	return (
 		<div className='w-full h-screen flex'>
-			{/* Left Section */}
-			{/*<div className='w-1/2 h-full flex flex-col bg-[#282c34]' items-center justify-center></div> */}
 			<div className="w-1/2 h-full flex flex-col items-center justify-center bg-[url('../assets/17818.jpg')] bg-cover bg-center"></div>
 			<div className='w-1/2 h-full bg-teal-600 flex flex-col p-20 justify-center'>
 				<div className='w-full flex flex-col max-w-[450px] mx-auto'>
 					<div className='w-full flex flex-col mb-10 text-white'>
-						<h3 className='text-lg mb-4'>Bem vindo! Por favor insira seus dados para começar.</h3>
+						<h3 className='text-lg mb-4'>Bem vindo à myClinic*! Por favor insira os seus dados para começar.</h3>
 					</div>
-
-					<div className='w-full flex flex-col mb-6'>
+					<form
+						onSubmit={e => {
+							e.preventDefault();
+							loginWithEmail();
+						}}
+						className='w-full flex flex-col mb-6'
+					>
 						<input
 							type='email'
+							autoComplete='email'
 							placeholder='Email'
-							className='w-full bg-transparent text-lg placeholder:text-white border-b border-white py-4 mb-4 outline-none'
+							className='w-full bg-transparent  text-white text-lg placeholder:text-white border-b border-white py-4 mb-4 outline-none'
 							value={email}
 							onChange={e => setEmail(e.target.value)}
+							required
 						/>
 						<input
 							type='password'
+							autoComplete='current-password'
 							placeholder='Senha'
-							className='w-full bg-transparent text-lg placeholder:text-white border-b border-white py-4 mb-4 outline-none'
+							className='w-full bg-transparent text-lg text-white placeholder:text-white border-b border-white py-4 mb-4 outline-none'
 							value={password}
 							onChange={e => setPassword(e.target.value)}
+							required
 						/>
-					</div>
 
-					{error && <div className='text-red-500 mb-4'>{error}</div>}
+						{error && <div className='text-red-500 mb-4'>{error}</div>}
 
-					<div className='w-full flex flex-col mb-4'>
-						<button onClick={loginWithEmail} disabled={authing} className='w-full bg-transparent border border-white text-white my-2 font-semibold rounded py-4 mb-4 disabled:opacity-50'>
-							Entrar com Email e Password
-						</button>
-					</div>
+						<div className='w-full flex flex-col mb-4'>
+							<button onClick={loginWithEmail} disabled={authing} className='w-full bg-transparent border border-white text-white my-2 font-semibold rounded py-4 mb-4 disabled:opacity-50'>
+								Entrar com Email e Password
+							</button>
+						</div>
+					</form>
 
 					<button onClick={loginWithGoogle} disabled={authing} className='w-full bg-transparent border border-white text-white my-2 font-semibold rounded py-4 mb-4 disabled:opacity-50'>
 						Entrar com Google
