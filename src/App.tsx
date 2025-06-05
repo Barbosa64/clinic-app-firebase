@@ -36,7 +36,7 @@ function AppRoutes() {
 				<Route
 					path='/marcar-consulta'
 					element={
-						<ProtectedRoute allowedRoles={['admin', 'doctor']}>
+						<ProtectedRoute allowedRoles={['admin', 'patient']}>
 							<ScheduleAppointment />
 						</ProtectedRoute>
 					}
@@ -53,7 +53,7 @@ function AppRoutes() {
 				<Route
 					path='/medicos'
 					element={
-						<ProtectedRoute allowedRoles={['admin', 'doctor']}>
+						<ProtectedRoute allowedRoles={['admin']}>
 							<TeamList />
 						</ProtectedRoute>
 					}
@@ -62,7 +62,7 @@ function AppRoutes() {
 				<Route
 					path='/pacientes'
 					element={
-						<ProtectedRoute allowedRoles={['patient', 'doctor', 'admin']}>
+						<ProtectedRoute allowedRoles={['doctor', 'admin', 'patient']}>
 							<PatientList />
 						</ProtectedRoute>
 					}
@@ -70,7 +70,7 @@ function AppRoutes() {
 				<Route
 					path='/pacientes/:id'
 					element={
-						<ProtectedRoute allowedRoles={['admin', 'doctor']}>
+						<ProtectedRoute allowedRoles={['admin', 'doctor', 'patient']}>
 							<Patients />
 						</ProtectedRoute>
 					}
