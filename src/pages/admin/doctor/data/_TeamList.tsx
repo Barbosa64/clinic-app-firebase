@@ -32,7 +32,6 @@ export default function TeamList() {
 	const specialty = ['Cardiologia', 'Dermatologia', 'Endocrinologia', 'Ginecologia', 'Ortopedia', 'Pediatria', 'Urologia'];
 	const [selectedSpecialty, setSelectedSpecialty] = useState('');
 
-	// Estado para armazenar o médico que está sendo editado (null se criando novo)
 	const [editingDoctor, setEditingDoctor] = useState<Doctor | null>(null);
 
 	const fetchDoctors = async () => {
@@ -112,10 +111,9 @@ export default function TeamList() {
 					{ merge: true },
 				);
 
-				// Se quiser, pode implementar atualização de email e senha no auth aqui (requer reautenticação)
-				// Por simplicidade, não faremos isso agora.
+				// falta implementar atualização de email e senha no auth  (requer reautenticação)
 			} else {
-				// Criar novo usuário com email e password
+				// Criar novo doutor com email e password
 				const { user } = await createUserWithEmailAndPassword(auth, email, password);
 
 				await setDoc(doc(db, 'users', user.uid), {
@@ -171,26 +169,26 @@ export default function TeamList() {
 
 			<ul className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2'>
 				{doctors.map((doctor, index) => (
-					<li key={index} className='bg-white p-4 rounded shadow flex items-center space-x-4 flex-wrap sm:flex-nowrap'>
-						<img src={doctor.imageUrl || 'https://via.placeholder.com/64'} alt={doctor.name} className='h-16 w-16 rounded-full object-cover flex-shrink-0' />
+					<li key={index} className='bg-white p-6 rounded-lg shadow flex flex-col items-center text-center space-y-2'>
+						<img src={doctor.imageUrl || 'https://randomuser.me/api/portraits/men/75.jpg'} alt={doctor.name} className='h-40 w-40 rounded-full object-cover' />
 
 						<div className='flex-1 min-w-0'>
-							<p className='font-semibold truncate'>{doctor.name || 'Nome não disponível'}</p>
-							<p className='text-sm text-gray-500 truncate'>{doctor.email || 'Sem email'}</p>
-							<p className='text-xs text-gray-400 truncate'>{doctor.specialty?.join(', ')}</p>
+							<p className='font-semibold text-lg'>{doctor.name || 'Nome não disponível'}</p>
+							<p className='text-sm text-gray-600 truncate'>{doctor.email || 'Sem email'}</p>
+							<p className='text-xm text-gray-500 truncate'>{doctor.specialty?.join(', ')}</p>
 						</div>
 
-						<div className='flex space-x-2 flex-shrink-0'>
+						<div className='flex space-x-2 mt-4'>
 							<button
 								onClick={() => openEditModal(doctor)}
-								className='text-green-600 hover:text-white border border-green-600 hover:bg-green-600 rounded px-3 py-1 text-sm font-semibold transition-colors duration-200 whitespace-nowrap'
+								className='text-green-600 hover:text-white border border-green-600 hover:bg-green-600 rounded px-3 py-1 text-mb font-semibold transition-colors duration-200 whitespace-nowrap'
 							>
 								Editar
 							</button>
 
 							<button
 								onClick={() => handleDeleteDoctor(doctor.id)}
-								className='text-red-600 hover:text-white border border-red-600 hover:bg-red-600 rounded px-3 py-1 text-sm font-semibold transition-colors duration-200 whitespace-nowrap'
+								className='text-red-600 hover:text-white border border-red-600 hover:bg-red-600 rounded px-3 py-1 text-mb font-semibold transition-colors duration-200 whitespace-nowrap'
 							>
 								Eliminar
 							</button>
