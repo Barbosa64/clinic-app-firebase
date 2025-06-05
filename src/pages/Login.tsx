@@ -1,28 +1,54 @@
 import { useState } from 'react';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
-import { db } from '../lib/firebase'; // certifique-se de importar seu db corretamente
+import { db } from '../lib/firebase';
 import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
 	const auth = getAuth();
 	const navigate = useNavigate();
-	const { setUser, setRole } = useAuth(); // Contexto de autenticação
+	const { setUser, setRole } = useAuth();
 
 	const [authing, setAuthing] = useState(false);
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [error, setError] = useState('');
 
-	const fetchUserRole = async (uid: string) => {
-		const userRef = doc(db, 'users', uid);
-		const userSnap = await getDoc(userRef);
-		if (userSnap.exists()) {
-			const data = userSnap.data();
-			setRole(data.role);
-		} else {
-			throw new Error('Perfil de usuário não encontrado');
+	const loginWithEmail = async () => {
+		setAuthing(true);
+		setError('');
+
+		try {
+			const { user } = await signInWithEmailAndPassword(auth, email, password);
+
+			const docRef = doc(db, 'users', user.uid);
+			const userDoc = await getDoc(docRef);
+
+			if (!userDoc.exists()) {
+				throw new Error('Perfil de usuário não encontrado');
+			}
+
+			const userData = userDoc.data();
+			const role = userData.role;
+
+			setUser(user);
+			setRole(role);
+
+			if (role === 'patient') {
+				navigate(`/pacientes/${user.uid}`);
+			} else if (role === 'doctor') {
+				navigate('/agenda');
+			} else if (role === 'admin') {
+				navigate('/');
+			} else {
+				throw new Error('Tipo de usuário desconhecido.');
+			}
+		} catch (error: any) {
+			console.error(error);
+			setError(error.message);
+		} finally {
+			setAuthing(false);
 		}
 	};
 
@@ -33,32 +59,34 @@ const Login = () => {
 		try {
 			const response = await signInWithPopup(auth, new GoogleAuthProvider());
 			const uid = response.user.uid;
+
+			// Busca o perfil do usuário
+			const userRef = doc(db, 'users', uid);
+			const userSnap = await getDoc(userRef);
+
+			if (!userSnap.exists()) {
+				throw new Error('Perfil de usuário não encontrado');
+			}
+
+			const userData = userSnap.data();
+			const role = userData.role;
+
 			setUser(response.user);
-			await fetchUserRole(uid);
-			navigate('/');
+			setRole(role);
+
+			if (role === 'patient') {
+				navigate(`/pacientes/${uid}`);
+			} else if (role === 'doctor') {
+				navigate('/');
+			} else if (role === 'admin') {
+				navigate('/');
+			} else {
+				throw new Error('Tipo de usuário desconhecido.');
+			}
 		} catch (error: any) {
 			console.log(error);
 			setError(error.message);
 		} finally {
-			setAuthing(false);
-		}
-	};
-
-	const loginWithEmail = async () => {
-		setAuthing(true);
-		setError('');
-
-		try {
-			const { user } = await signInWithEmailAndPassword(auth, email, password);
-
-			// Verifica/cria perfil
-			const docRef = doc(db, 'users', user.uid);
-			await getDoc(docRef);
-
-			navigate('/');
-		} catch (error: any) {
-			console.error(error);
-			setError(error.message);
 			setAuthing(false);
 		}
 	};
@@ -82,7 +110,7 @@ const Login = () => {
 							type='email'
 							autoComplete='email'
 							placeholder='Email'
-							className='w-full bg-transparent  text-white text-lg placeholder:text-white border-b border-white py-4 mb-4 outline-none'
+							className='w-full bg-transparent text-white text-lg placeholder:text-white border-b border-white py-4 mb-4 outline-none'
 							value={email}
 							onChange={e => setEmail(e.target.value)}
 							required
@@ -100,7 +128,7 @@ const Login = () => {
 						{error && <div className='text-red-500 mb-4'>{error}</div>}
 
 						<div className='w-full flex flex-col mb-4'>
-							<button onClick={loginWithEmail} disabled={authing} className='w-full bg-transparent border border-white text-white my-2 font-semibold rounded py-4 mb-4 disabled:opacity-50'>
+							<button type='submit' disabled={authing} className='w-full bg-transparent border border-white text-white my-2 font-semibold rounded py-4 mb-4 disabled:opacity-50'>
 								Entrar com Email e Password
 							</button>
 						</div>
