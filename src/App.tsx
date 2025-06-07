@@ -13,6 +13,7 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 
 import Patients from './pages/admin/Patients';
+import PatientAppointment from './pages/patient/data/PatientAppointment.tsx';
 
 function AppRoutes() {
 	const location = useLocation();
@@ -34,9 +35,9 @@ function AppRoutes() {
 					}
 				/>
 				<Route
-					path='/marcar-consulta'
+					path='/consulta/admin'
 					element={
-						<ProtectedRoute allowedRoles={['admin', 'patient']}>
+						<ProtectedRoute allowedRoles={['admin']}>
 							<ScheduleAppointment />
 						</ProtectedRoute>
 					}
@@ -64,6 +65,14 @@ function AppRoutes() {
 					element={
 						<ProtectedRoute allowedRoles={['doctor', 'admin', 'patient']}>
 							<PatientList />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path='/marcar-consulta/:id'
+					element={
+						<ProtectedRoute allowedRoles={['admin', 'patient']}>
+							<PatientAppointment />
 						</ProtectedRoute>
 					}
 				/>

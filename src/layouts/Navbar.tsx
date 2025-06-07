@@ -2,12 +2,14 @@ import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuIt
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { getAuth, signOut } from 'firebase/auth';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(' ');
 }
 
 const Navbar = () => {
+	const { user } = useAuth();
 	const auth = getAuth();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -16,8 +18,13 @@ const Navbar = () => {
 		{ name: 'Dashboard', href: '/', current: location.pathname === '/' },
 		{ name: 'Médicos', href: '/medicos', current: location.pathname === '/medicos' },
 		{ name: 'Pacientes', href: '/pacientes', current: location.pathname === '/pacientes' },
-		{ name: 'Marcar consulta', href: '/marcar-consulta', current: location.pathname === '/marcar-consulta' },
+		{ name: 'Consulta Admin', href: '/consulta/admin', current: location.pathname === '/consulta/admin' },
 		{ name: 'Agenda', href: '/agenda', current: location.pathname === '/agenda' },
+		{
+			name: 'Marcar Consulta',
+			href: user ? `/marcar-consulta/${user.uid}` : '/marcar-consulta',
+			current: location.pathname.startsWith('/marcar-consulta/'),
+		},
 	];
 
 	const handleSignOut = async () => {

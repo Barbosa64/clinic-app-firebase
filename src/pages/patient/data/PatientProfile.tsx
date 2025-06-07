@@ -27,7 +27,7 @@ export default function PatientProfile() {
 			<h1 className='text-3xl font-bold'>{patient.name}</h1>
 			<p className='text-gray-600'>Idade: {patient.age}</p>
 			<p className='text-gray-600'>Gênero: {patient.gender}</p>
-			{/* Adicione outros campos conforme necessário */}
+			
 		</div>
 	);
 }
