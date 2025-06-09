@@ -14,6 +14,7 @@ import { AuthProvider } from './context/AuthContext';
 
 import Patients from './pages/admin/Patients';
 import PatientAppointment from './pages/patient/data/PatientAppointment.tsx';
+import Settings from './layouts/Settings';
 
 function AppRoutes() {
 	const location = useLocation();
@@ -81,6 +82,14 @@ function AppRoutes() {
 					element={
 						<ProtectedRoute allowedRoles={['admin', 'doctor', 'patient']}>
 							<Patients />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path='/configuracoes'
+					element={
+						<ProtectedRoute allowedRoles={['admin', 'doctor', 'patient']}>
+							<Settings />
 						</ProtectedRoute>
 					}
 				/>
