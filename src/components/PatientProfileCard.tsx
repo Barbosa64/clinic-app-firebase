@@ -51,7 +51,7 @@ export default function PatientProfileCard({ id }: Props) {
 			<img className='h-24 w-24 rounded-full object-cover' src={patient.imageUrl || 'https://placehold.co/100x100?text=Avatar'} alt={patient.name} />
 			<h3 className='mt-3 text-xl font-semibold text-teal-700'>{patient.name}</h3>
 			<p className='text-gray-500 text-sm'>
-				{patient.gender}, {patient.age ?? 'Idade desconhecida'}
+				{patient.gender} {patient.age ?? 'Idade desconhecida'}
 			</p>
 			<div className='mt-4 space-y-2 text-sm text-gray-600 text-left w-full px-6'>
 				<p>

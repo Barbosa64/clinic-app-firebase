@@ -10,6 +10,8 @@ interface Patient {
 	role: string;
 	name: string;
 	email: string;
+	insurance: string;
+	insuranceNumber: string;
 	imageUrl?: string;
 }
 
@@ -17,11 +19,13 @@ export default function PatientList() {
 	const auth = getAuth();
 	const navigate = useNavigate();
 
+	const role = 'patient';
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const role = 'patient';
 	const [name, setName] = useState('');
 	const [imageUrl, setImageUrl] = useState('');
+	const [insurance, setInsurance] = useState('');
+	const [insuranceNumber, setInsuranceNumber] = useState('');
 	const [error, setError] = useState('');
 	const [showModal, setShowModal] = useState(false);
 	const [patients, setPatients] = useState<Patient[]>([]);
@@ -53,6 +57,8 @@ export default function PatientList() {
 		setPassword('');
 		setName('');
 		setImageUrl('');
+		setInsurance('');
+		setInsuranceNumber('');
 		setError('');
 		setShowModal(true);
 	};
@@ -62,6 +68,8 @@ export default function PatientList() {
 		setEditingPatient(patient);
 		setName(patient.name);
 		setEmail(patient.email);
+		setInsurance(patient.insurance || '');
+		setInsuranceNumber(patient.insuranceNumber || '');
 		setImageUrl(patient.imageUrl || '');
 		setPassword(''); // password vazio, não vamos mostrar senha atual por segurança
 		setError('');
@@ -74,6 +82,8 @@ export default function PatientList() {
 		setEmail('');
 		setPassword('');
 		setName('');
+		setInsurance('');
+		setInsuranceNumber('');
 		setImageUrl('');
 		setError('');
 	};
@@ -89,7 +99,7 @@ export default function PatientList() {
 
 		try {
 			if (editingPatient) {
-				// Atualiza o documento do médico
+				// Atualiza o documento do paciente
 				await setDoc(
 					doc(db, 'users', editingPatient.id),
 					{
@@ -98,12 +108,11 @@ export default function PatientList() {
 						name,
 						email,
 						imageUrl,
+						insurance,
+						insuranceNumber,
 					},
 					{ merge: true },
 				);
-
-				// Se quiser, pode implementar atualização de email e senha no auth aqui (requer reautenticação)
-				// Por simplicidade, não faremos isso agora.
 			} else {
 				// Criar novo usuário com email e password
 				const { user } = await createUserWithEmailAndPassword(auth, email, password);
@@ -113,6 +122,8 @@ export default function PatientList() {
 					role: role,
 					name,
 					email,
+					insurance,
+					insuranceNumber,
 					imageUrl,
 				});
 			}
@@ -220,6 +231,29 @@ export default function PatientList() {
 									className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300 sm:text-sm'
 									disabled={!!editingPatient} // desabilita edição de senha para simplicidade
 								/>
+							</div>
+							<div className='space-y-4'>
+								<div>
+									<label className='block text-sm font-medium text-gray-700'>Seguro</label>
+									<input
+										type='text'
+										value={insurance}
+										onChange={e => setInsurance(e.target.value)}
+										placeholder='Ex: ADSE, Multicare, etc.'
+										className='w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none'
+									/>
+								</div>
+
+								<div>
+									<label className='block text-sm font-medium text-gray-700'>Número do Seguro</label>
+									<input
+										type='text'
+										value={insuranceNumber}
+										onChange={e => setInsuranceNumber(e.target.value)}
+										placeholder='Número do Seguro'
+										className='w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none'
+									/>
+								</div>
 							</div>
 
 							<div>
