@@ -5,8 +5,16 @@ import { useNavigate } from 'react-router-dom';
 import { db } from '../lib/firebase';
 
 const Signup = () => {
+	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [insurance, setInsurance] = useState('');
+	const [insuranceNumber, setInsuranceNumber] = useState('');
+	const [imageUrl, setImageUrl] = useState('');
+	const [gender, setGender] = useState<'male' | 'female' | 'other'>('other');
+	const [phone, setPhone] = useState('');
+	const [birthDate, setBirthDate] = useState('');
+	const [age, setAge] = useState('');
 	const [role, setRole] = useState<'admin' | 'doctor' | 'patient'>('patient');
 	const [error, setError] = useState('');
 	const navigate = useNavigate();
@@ -20,6 +28,15 @@ const Signup = () => {
 			await setDoc(doc(db, 'users', user.uid), {
 				UID: user.uid,
 				role: role,
+				name,
+				email,
+				insurance,
+				insuranceNumber,
+				imageUrl,
+				gender,
+				phone,
+				birthDate,
+				age,
 			});
 
 			navigate('/');
@@ -37,11 +54,18 @@ const Signup = () => {
 			<div className='w-1/2 h-full bg-[#1a1a1a] flex flex-col p-20 justify-center'>
 				<div className='w-full flex flex-col max-w-[450px] mx-auto'>
 					<div className='w-full flex flex-col mb-10 text-white'>
-						<h3 className='text-lg mb-4'>Crie sua conta para começar.</h3>
+						<h3 className='text-lg mb-4'>Crie a sua conta para começar.</h3>
 					</div>
 
 					{/* Inputs */}
 					<div className='w-full flex flex-col mb-6'>
+						<input
+							type='text'
+							placeholder='Nome'
+							className='w-full bg-transparent text-lg placeholder:text-white border-b border-white py-4 mb-4 outline-none'
+							value={name}
+							onChange={e => setName(e.target.value)}
+						/>
 						<input
 							type='email'
 							placeholder='Email'
@@ -56,15 +80,57 @@ const Signup = () => {
 							value={password}
 							onChange={e => setPassword(e.target.value)}
 						/>
-						<select value={role} onChange={e => setRole(e.target.value as 'admin' | 'doctor' | 'patient')} className='bg-transparent border border-white text-white py-3 px-2 rounded mt-2'>
-							<option className='bg-black' value='admin'>
-								Admin
+						<input
+							type='text'
+							placeholder='Telefone'
+							className='w-full bg-transparent text-lg placeholder:text-white border-b border-white py-4 mb-4 outline-none'
+							value={phone}
+							onChange={e => setPhone(e.target.value)}
+						/>
+						<input
+							type='date'
+							placeholder='Data de Nascimento'
+							className='w-full bg-transparent text-lg placeholder:text-white border-b border-white py-4 mb-4 outline-none'
+							value={birthDate}
+							onChange={e => setBirthDate(e.target.value)}
+						/>
+						<input
+							type='number'
+							placeholder='Idade'
+							className='w-full bg-transparent text-lg placeholder:text-white border-b border-white py-4 mb-4 outline-none'
+							value={age}
+							onChange={e => setAge(e.target.value)}
+						/>
+						<input
+							type='text'
+							placeholder='Seguro'
+							className='w-full bg-transparent text-lg placeholder:text-white border-b border-white py-4 mb-4 outline-none'
+							value={insurance}
+							onChange={e => setInsurance(e.target.value)}
+						/>
+						<input
+							type='text'
+							placeholder='Número do Seguro'
+							className='w-full bg-transparent text-lg placeholder:text-white border-b border-white py-4 mb-4 outline-none'
+							value={insuranceNumber}
+							onChange={e => setInsuranceNumber(e.target.value)}
+						/>
+						<input
+							type='url'
+							placeholder='URL da Imagem'
+							className='w-full bg-transparent text-lg placeholder:text-white border-b border-white py-4 mb-4 outline-none'
+							value={imageUrl}
+							onChange={e => setImageUrl(e.target.value)}
+						/>
+						<select value={gender} onChange={e => setGender(e.target.value as 'male' | 'female' | 'other')} className='bg-transparent border border-white text-white py-3 px-2 rounded mt-2'>
+							<option className='bg-black' value='male'>
+								Masculino
 							</option>
-							<option className='bg-black' value='doctor'>
-								Doutor
+							<option className='bg-black' value='female'>
+								Feminino
 							</option>
-							<option className='bg-black' value='patient'>
-								Paciente
+							<option className='bg-black' value='other'>
+								Outro
 							</option>
 						</select>
 					</div>
