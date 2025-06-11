@@ -117,9 +117,13 @@ const Agenda: React.FC = () => {
 			(!end || consultaDate <= end)
 		);
 	});
-	if (loading) {
-		return <p className='text-center text-gray-500 mt-10'>A carregar consultas...</p>;
-	}
+	if (loading)
+		return (
+			<div className='flex justify-center items-center h-32'>
+				<div className='animate-spin rounded-full h-10 w-10 border-b-2 border-teal-600'></div>
+				<span className='ml-3 text-teal-700 font-medium'>A Carregar consultas...</span>
+			</div>
+		);
 
 	const formatDateTime = (date: Date) => date.toLocaleString('pt-PT', { dateStyle: 'medium', timeStyle: 'short' });
 

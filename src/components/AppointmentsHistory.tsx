@@ -110,7 +110,13 @@ export default function AppointmentsHistory({ patientId }: Props) {
 		}
 	};
 
-	if (loading) return <p className='text-center text-gray-500'>A Carregar consultas...</p>;
+	if (loading)
+		return (
+			<div className='flex justify-center items-center h-32'>
+				<div className='animate-spin rounded-full h-10 w-10 border-b-2 border-teal-600'></div>
+				<span className='ml-3 text-teal-700 font-medium'>A Carregar consultas...</span>
+			</div>
+		);
 
 	return (
 		<div className='bg-white p-6 rounded-lg shadow space-y-8'>
@@ -124,7 +130,7 @@ export default function AppointmentsHistory({ patientId }: Props) {
 					<p className='text-gray-400'>Nenhuma consulta agendada</p>
 				) : (
 					<ul className='grid gap-4 sm:grid-cols-2'>
-						{upcomingAppointments.map(appt => (
+						{upcomingAppointments.slice(0, 4).map(appt => (
 							<li key={appt.id} className='border p-4 rounded-lg bg-gray-50 shadow-sm'>
 								<p>
 									<span className='font-medium'>📅 Data:</span> {appt.date.toLocaleString('pt-BR')}
@@ -156,7 +162,7 @@ export default function AppointmentsHistory({ patientId }: Props) {
 					<p className='text-gray-400'>Nenhuma consulta realizada</p>
 				) : (
 					<ul className='grid gap-4 sm:grid-cols-2'>
-						{pastAppointments.map(appt => (
+						{pastAppointments.slice(0, 2).map(appt => (
 							<li key={appt.id} className='border p-4 rounded-lg bg-gray-50 shadow-sm'>
 								<p>
 									<span className='font-medium'>📅 Data:</span> {appt.date.toLocaleString('pt-PT')}
