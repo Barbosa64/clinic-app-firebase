@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../lib/firebase';
 import { collection, getDocs, query, where, orderBy, addDoc, Timestamp } from 'firebase/firestore';
 import { useAuth } from '../context/AuthContext';
+import { Syringe } from 'lucide-react';
 
 const farmacos = ['Ben-u-ron', 'Nolotil', 'Brufen', 'Aspirina', 'Voltaren', 'Naprosyn', 'Zitromax', 'Aerius', 'Ativan', 'Prozac', 'Ziloric', 'Pantoprazol'];
 
@@ -41,10 +42,9 @@ const FarmacoTest = ({ patientId }: Props) => {
 			const q = query(consultasRef, where('patientId', '==', patientId), orderBy('date', 'desc'));
 
 			const snapshot = await getDocs(q);
-
 			const lista = snapshot.docs.map(doc => {
-				const date = doc.data().date?.toDate(); // Timestamp -> Date
-				return { id: doc.id, date: date };
+				const date = doc.data().date?.toDate();
+				return { id: doc.id, date };
 			});
 
 			setConsultas(lista);
@@ -53,12 +53,9 @@ const FarmacoTest = ({ patientId }: Props) => {
 		if (user) fetchConsultas();
 	}, [user, patientId]);
 
-	if (loading) return <p>A carregar...</p>;
-	if (!user) return <p>Precisa de fazer login para prescrever.</p>;
-
-	if (role !== 'doctor' && role !== 'admin') {
-		return <p>Não tem permissão. </p>;
-	}
+	if (loading) return <p className='text-center text-gray-500'>A carregar...</p>;
+	if (!user) return <p className='text-red-600'>Precisa de fazer login para prescrever.</p>;
+	if (role !== 'doctor' && role !== 'admin') return <p className='text-red-600'>Sem permissão.</p>;
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
 		const { name, value } = e.target;
@@ -101,58 +98,59 @@ const FarmacoTest = ({ patientId }: Props) => {
 	};
 
 	return (
-		<form onSubmit={handleSubmit} className='flex flex-col space-y-4 p-4 bg-gray-800 rounded-xl text-white'>
-			<h2 className='text-xl font-bold'>Prescrever Fármaco</h2>
+		<div className='bg-white p-6 rounded-lg shadow space-y-6'>
+			<h2 className='text-xl font-semibold text-teal-700 flex items-center gap-2'>
+				<Syringe className='w-5 h-5 text-teal-600' />
+				Prescrever Fármaco
+			</h2>
 
-			{/* Fármaco */}
-			<div>
-				<label className='block mb-1'>Fármaco</label>
-				<select name='farmaco' value={form.farmaco} onChange={handleChange} className='w-full p-2 rounded bg-white text-black' required>
-					<option value=''>Selecione</option>
-					{farmacos.map((f, idx) => (
-						<option key={idx} value={f}>
-							{f}
-						</option>
-					))}
-				</select>
-			</div>
+			<form onSubmit={handleSubmit} className='space-y-4'>
+				<div>
+					<label className='block mb-1 font-medium'>Fármaco</label>
+					<select name='farmaco' value={form.farmaco} onChange={handleChange} required className='w-full bg-gray-50 border border-gray-300 rounded p-2'>
+						<option value=''>Selecione</option>
+						{farmacos.map((f, idx) => (
+							<option key={idx} value={f}>
+								{f}
+							</option>
+						))}
+					</select>
+				</div>
 
-			{/* Consulta */}
-			<div>
-				<label className='block mb-1'>Consulta</label>
-				<select name='consultaId' value={form.consultaId} onChange={handleChange} className='w-full p-2 rounded bg-white text-black' required>
-					<option value=''>Selecione a consulta</option>
-					{consultas.map(consulta => (
-						<option key={consulta.id} value={consulta.id}>
-							{consulta.date.toLocaleString()}
-						</option>
-					))}
-				</select>
-			</div>
+				<div>
+					<label className='block mb-1 font-medium'>Consulta</label>
+					<select name='consultaId' value={form.consultaId} onChange={handleChange} required className='w-full bg-gray-50 border border-gray-300 rounded p-2'>
+						<option value=''>Selecione a consulta</option>
+						{consultas.map(consulta => (
+							<option key={consulta.id} value={consulta.id}>
+								{consulta.date.toLocaleString()}
+							</option>
+						))}
+					</select>
+				</div>
 
-			{/* Dose */}
-			<div>
-				<label className='block mb-1'>Dose</label>
-				<input type='text' name='dose' value={form.dose} onChange={handleChange} placeholder='Ex: 500mg' className='w-full p-2 rounded bg-white text-black' required />
-			</div>
+				<div>
+					<label className='block mb-1 font-medium'>Dose</label>
+					<input type='text' name='dose' value={form.dose} onChange={handleChange} placeholder='Ex: 500mg' required className='w-full bg-gray-50 border border-gray-300 rounded p-2' />
+				</div>
 
-			{/* Frequência */}
-			<div>
-				<label className='block mb-1'>Frequência</label>
-				<input type='text' name='frequencia' value={form.frequencia} onChange={handleChange} placeholder='Ex: 2x ao dia' className='w-full p-2 rounded bg-white text-black' required />
-			</div>
+				<div>
+					<label className='block mb-1 font-medium'>Frequência</label>
+					<input type='text' name='frequencia' value={form.frequencia} onChange={handleChange} placeholder='Ex: 2x ao dia' required className='w-full bg-gray-50 border border-gray-300 rounded p-2' />
+				</div>
 
-			{/* Observações */}
-			<div>
-				<label className='block mb-1'>Observações</label>
-				<textarea name='observacoes' value={form.observacoes} onChange={handleChange} placeholder='Instruções adicionais...' className='w-full p-2 rounded bg-white text-black' />
-			</div>
+				<div>
+					<label className='block mb-1 font-medium'>Observações</label>
+					<textarea name='observacoes' value={form.observacoes} onChange={handleChange} placeholder='Instruções adicionais...' className='w-full bg-gray-50 border border-gray-300 rounded p-2' />
+				</div>
 
-			{/* Botão */}
-			<button type='submit' className='bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded'>
-				Prescrever
-			</button>
-		</form>
+				<div className='text-right'>
+					<button type='submit' className='bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded transition'>
+						Prescrever
+					</button>
+				</div>
+			</form>
+		</div>
 	);
 };
 

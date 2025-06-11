@@ -11,22 +11,21 @@ export default function PatientsPage() {
 	const { id } = useParams();
 
 	return (
-		<main className='flex-1 p-6 grid grid-cols-4 gap-4'>
-			<aside className='col-span-1'>
+		<main className='flex-1 p-4 grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-4'>
+			<aside className='xl:col-span-1'>
 				<SidebarPatients />
 			</aside>
 
-			<section className='col-span-2 space-y-4'>
+			<section className='space-y-4 xl:col-span-2'>
 				<AppointmentsHistory patientId={id} />
 				<PatientQuickStats />
 				<DiagnosticList patientId={id || ''} />
+				{id && <FarmacoTest patientId={id} />}
 			</section>
 
-			<aside className='col-span-1 space-y-4'>
+			<aside className='space-y-4 xl:col-span-1'>
 				{id ? <PatientProfileCard id={id} /> : <p className='text-center'>Selecione um paciente</p>}
 				<LabResults patientId={id || ''} />
-
-				{id && <FarmacoTest patientId={id} />}
 			</aside>
 		</main>
 	);
