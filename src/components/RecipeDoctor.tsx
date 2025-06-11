@@ -55,7 +55,7 @@ const FarmacoTest = ({ patientId }: Props) => {
 
 	if (loading) return <p className='text-center text-gray-500'>A carregar...</p>;
 	if (!user) return <p className='text-red-600'>Precisa de fazer login para prescrever.</p>;
-	if (role !== 'doctor' && role !== 'admin') return <p className='text-red-600'>Sem permissão.</p>;
+	if (role !== 'doctor' && role !== 'admin') return;
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
 		const { name, value } = e.target;

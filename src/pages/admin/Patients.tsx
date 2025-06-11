@@ -18,7 +18,6 @@ export default function PatientsPage() {
 
 			<section className='space-y-4 xl:col-span-2'>
 				<AppointmentsHistory patientId={id} />
-				<PatientQuickStats />
 				<DiagnosticList patientId={id || ''} />
 				{id && <FarmacoTest patientId={id} />}
 			</section>
