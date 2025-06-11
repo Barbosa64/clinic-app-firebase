@@ -67,6 +67,13 @@ export default function PatientAppointment() {
 			return;
 		}
 
+		const appointmentDateTime = new Date(appointmentDate);
+		if (appointmentDateTime < new Date()) {
+			alert('A data da consulta deve ser no futuro.');
+			setStatus('error');
+			return;
+		}
+
 		setStatus('loading');
 
 		try {
@@ -84,7 +91,7 @@ export default function PatientAppointment() {
 				specialty: selectedSpecialty,
 				patientId: user.uid,
 				patientName: patientData.name || patientData.email || 'Desconhecido',
-				date: Timestamp.fromDate(new Date(appointmentDate)),
+				date: Timestamp.fromDate(appointmentDateTime),
 			});
 
 			setStatus('success');
@@ -93,7 +100,6 @@ export default function PatientAppointment() {
 			setSelectedDoctorId('');
 			setAppointmentDate('');
 
-			// Recarrega consultas após marcar
 			const appointmentsQuery = query(collection(db, 'Appointments'), where('patientId', '==', user.uid));
 			const appointmentsSnap = await getDocs(appointmentsQuery);
 			const appointmentsList = appointmentsSnap.docs.map(doc => ({
@@ -156,7 +162,13 @@ export default function PatientAppointment() {
 
 				<div>
 					<label className='block mb-1 font-medium text-gray-700'>Data da Consulta:</label>
-					<input type='datetime-local' className='border w-full p-2 rounded' value={appointmentDate} onChange={e => setAppointmentDate(e.target.value)} />
+					<input
+						type='datetime-local'
+						className='border w-full p-2 rounded'
+						value={appointmentDate}
+						onChange={e => setAppointmentDate(e.target.value)}
+						min={new Date().toISOString().slice(0, 16)} // evita data passada
+					/>
 				</div>
 
 				<button type='submit' className='mt-4 w-full px-4 py-2 bg-teal-600 text-white font-medium rounded hover:bg-teal-700 transition' disabled={status === 'loading'}>
