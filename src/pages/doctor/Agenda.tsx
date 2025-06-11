@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { getAuth } from 'firebase/auth';
-import { CalendarCheck, History } from 'lucide-react';
+import { CalendarCheck, History, Search } from 'lucide-react';
 
 interface Consulta {
 	id: string;
@@ -15,6 +15,10 @@ interface Consulta {
 const Agenda: React.FC = () => {
 	const [upcoming, setUpcoming] = useState<Consulta[]>([]);
 	const [past, setPast] = useState<Consulta[]>([]);
+	const [searchTerm, setSearchTerm] = useState('');
+	const [filterSpecialty, setFilterSpecialty] = useState('');
+	const [startDate, setStartDate] = useState('');
+	const [endDate, setEndDate] = useState('');
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -50,7 +54,6 @@ const Agenda: React.FC = () => {
 					const data = docSnap.data();
 					const apptDate: Date = data.date.toDate();
 
-					// Buscar nomes do paciente e médico
 					const patientDoc = await getDoc(doc(db, 'users', data.patientId));
 					const doctorDoc = await getDoc(doc(db, 'users', data.doctorId));
 					const patientName = patientDoc.exists() ? patientDoc.data().name || 'Desconhecido' : 'Desconhecido';
@@ -87,6 +90,33 @@ const Agenda: React.FC = () => {
 		fetchConsultas();
 	}, []);
 
+	const filteredUpcoming = upcoming.filter(consulta => {
+		const consultaDate = consulta.date;
+		const start = startDate ? new Date(startDate) : null;
+		const end = endDate ? new Date(endDate) : null;
+		const specialty = consulta.specialty ? String(consulta.specialty).toLowerCase().trim() : '';
+
+		return (
+			(consulta.patientName.toLowerCase().includes(searchTerm.toLowerCase()) || consulta.doctorName.toLowerCase().includes(searchTerm.toLowerCase())) &&
+			(!filterSpecialty || specialty === filterSpecialty.toLowerCase().trim()) &&
+			(!start || consultaDate >= start) &&
+			(!end || consultaDate <= end)
+		);
+	});
+
+	const filteredPast = past.filter(consulta => {
+		const consultaDate = consulta.date;
+		const start = startDate ? new Date(startDate) : null;
+		const end = endDate ? new Date(endDate) : null;
+		const specialty = consulta.specialty ? String(consulta.specialty).toLowerCase().trim() : '';
+
+		return (
+			(consulta.patientName.toLowerCase().includes(searchTerm.toLowerCase()) || consulta.doctorName.toLowerCase().includes(searchTerm.toLowerCase())) &&
+			(!filterSpecialty || specialty === filterSpecialty.toLowerCase().trim()) &&
+			(!start || consultaDate >= start) &&
+			(!end || consultaDate <= end)
+		);
+	});
 	if (loading) {
 		return <p className='text-center text-gray-500 mt-10'>A carregar consultas...</p>;
 	}
@@ -95,58 +125,68 @@ const Agenda: React.FC = () => {
 
 	return (
 		<div className='bg-white p-6 rounded-lg shadow space-y-10 max-w-5xl mx-auto'>
+			{/* Filtros aprimorados */}
+			<div className='mb-6 bg-gray-100 p-6 rounded-lg shadow-sm'>
+				<h3 className='text-lg font-semibold text-gray-700 mb-4'>🔍 Filtros de Pesquisa</h3>
+				<div className='flex flex-wrap gap-4'>
+					<div className='relative w-full sm:w-1/3'>
+						<Search className='absolute left-3 top-3 text-gray-400' />
+						<input
+							type='text'
+							placeholder='Procurar por nome...'
+							value={searchTerm}
+							onChange={e => setSearchTerm(e.target.value)}
+							className='p-2 pl-10 border border-gray-300 rounded w-full bg-white focus:outline-none focus:ring-2 focus:ring-teal-500'
+						/>
+					</div>
+
+					<select
+						value={filterSpecialty}
+						onChange={e => setFilterSpecialty(e.target.value)}
+						className='p-2 border border-gray-300 rounded w-full sm:w-1/3 bg-white focus:outline-none focus:ring-2 focus:ring-teal-500'
+					>
+						<option value=''>Todas as especialidades</option>
+						<option value='Cardiologia'>Cardiologia</option>
+						<option value='Dermatologia'>Dermatologia</option>
+						<option value='Ortopedia'>Ortopedia</option>
+					</select>
+
+					<input
+						type='date'
+						value={startDate}
+						onChange={e => setStartDate(e.target.value)}
+						className='p-2 border border-gray-300 rounded w-full sm:w-1/6 bg-white focus:outline-none focus:ring-2 focus:ring-teal-500'
+					/>
+					<input
+						type='date'
+						value={endDate}
+						onChange={e => setEndDate(e.target.value)}
+						className='p-2 border border-gray-300 rounded w-full sm:w-1/6 bg-white focus:outline-none focus:ring-2 focus:ring-teal-500'
+					/>
+				</div>
+			</div>
+
 			{/* Próximas Consultas */}
 			<section>
 				<h2 className='text-xl font-semibold text-teal-700 mb-4 flex items-center gap-2'>
 					<CalendarCheck className='w-6 h-6 text-teal-600' />
 					Próximas Consultas
 				</h2>
-				{upcoming.length === 0 ? (
-					<p className='text-gray-400'>Nenhuma consulta agendada</p>
-				) : (
-					<ul className='grid gap-6 sm:grid-cols-2'>
-						{upcoming.map(({ id, date, doctorName, specialty }) => (
-							<li key={id} className='border border-teal-200 rounded-lg p-4 bg-teal-50 shadow-sm hover:shadow-md transition'>
-								<p>
-									<span className='font-medium'>📅 Data:</span> {formatDateTime(date)}
-								</p>
-								<p>
-									<span className='font-medium'>🩺 Médico:</span> {doctorName}
-								</p>
-								<p>
-									<span className='font-medium'>🏷️ Especialidade:</span> {specialty}
-								</p>
-							</li>
-						))}
-					</ul>
-				)}
-			</section>
-
-			{/* Histórico de Consultas */}
-			<section>
-				<h2 className='text-xl font-semibold text-teal-700 mb-4 flex items-center gap-2'>
-					<History className='w-6 h-6 text-teal-600' />
-					Histórico de Consultas
-				</h2>
-				{past.length === 0 ? (
-					<p className='text-gray-400'>Nenhuma consulta realizada</p>
-				) : (
-					<ul className='grid gap-6 sm:grid-cols-2'>
-						{past.map(({ id, date, doctorName, specialty }) => (
-							<li key={id} className='border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm hover:shadow-md transition'>
-								<p>
-									<span className='font-medium'>📅 Data:</span> {formatDateTime(date)}
-								</p>
-								<p>
-									<span className='font-medium'>🩺 Médico:</span> {doctorName}
-								</p>
-								<p>
-									<span className='font-medium'>🏷️ Especialidade:</span> {specialty}
-								</p>
-							</li>
-						))}
-					</ul>
-				)}
+				<ul className='grid gap-6 sm:grid-cols-2'>
+					{filteredUpcoming.map(({ id, date, doctorName, specialty }) => (
+						<li key={id} className='border border-teal-200 rounded-lg p-4 bg-teal-50 shadow-sm hover:shadow-md transition'>
+							<p>
+								<strong>📅 Data:</strong> {formatDateTime(date)}
+							</p>
+							<p>
+								<strong>🩺 Médico:</strong> {doctorName}
+							</p>
+							<p>
+								<strong>🏷️ Especialidade:</strong> {specialty}
+							</p>
+						</li>
+					))}
+				</ul>
 			</section>
 		</div>
 	);
