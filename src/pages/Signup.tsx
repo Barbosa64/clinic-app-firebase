@@ -15,7 +15,7 @@ const Signup = () => {
 	const [phone, setPhone] = useState('');
 	const [birthDate, setBirthDate] = useState('');
 	const [age, setAge] = useState('');
-	const [role, setRole] = useState<'admin' | 'doctor' | 'patient'>('patient');
+	const role = 'patient';
 	const [error, setError] = useState('');
 	const navigate = useNavigate();
 	const auth = getAuth();
@@ -52,13 +52,13 @@ const Signup = () => {
 	return (
 		<div className='w-full h-screen flex'>
 			{/* Seção Esquerda (ilustração ou cor de fundo) */}
-			<div className="w-1/2 h-full flex flex-col items-center justify-center bg-[url('../assets/17818.jpg')] bg-cover bg-center"></div>
+			<div className="w-1/2 h-full flex flex-col items-center justify-center bg-[url('../assets/64.jpg')] bg-cover bg-center"></div>
 
 			{/* Seção Direita (formulário) */}
 			<div className='w-1/2 h-full bg-teal-600 flex flex-col p-20 justify-center'>
 				<div className='w-full flex flex-col max-w-[450px] mx-auto'>
 					<div className='w-full flex flex-col mb-10 text-white'>
-						<h3 className='text-lg mb-4'>Crie a sua conta para começar.</h3>
+						<h3 className='text-lg mb-4'>Crie a sua conta na Clinica* para começar.</h3>
 					</div>
 
 					{/* Inputs */}
@@ -132,7 +132,7 @@ const Signup = () => {
 							value={imageUrl}
 							onChange={e => setImageUrl(e.target.value)}
 						/>
-						<select value={gender} onChange={e => setGender(e.target.value as 'Maculino' | 'Feminino' | 'Outro')} className='bg-transparent border border-white text-white py-3 px-2 rounded mt-2'>
+						<select value={gender} onChange={e => setGender(e.target.value as 'Masculino' | 'Feminino' | 'Outro')} className='bg-transparent border border-white text-white py-3 px-2 rounded mt-2'>
 							<option className='bg-black' value='Masculino'>
 								Masculino
 							</option>
@@ -158,7 +158,7 @@ const Signup = () => {
 
 				{/* Link para login */}
 				<div className='w-full flex items-center justify-center mt-10'>
-					<p className='text-sm font-normal text-gray-400'>
+					<p className='text-sm font-normal text-gray-800'>
 						Já tem conta?
 						<span className='text-white ml-1 cursor-pointer' onClick={() => navigate('/login')}>
 							Entrar

@@ -73,8 +73,13 @@ export default function PatientProfileCard({ id }: Props) {
 						Seguro: <span className='font-medium'>{patient.insurance || 'N/A'}</span>
 					</span>
 				</p>
+				<p className='flex items-center gap-2'>
+					<ShieldCheckIcon className='w-4 h-4 text-teal-600' />
+					<span>
+						Numero do Seguro: <span className='font-medium'>{patient.insuranceNumber || 'N/A'}</span>
+					</span>
+				</p>
 			</div>
-			<button className='mt-6 px-5 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 transition'>Mostrar toda a informação</button>
 		</div>
 	);
 }

@@ -40,7 +40,7 @@ const Login = () => {
 			} else if (role === 'doctor') {
 				navigate('/agenda');
 			} else if (role === 'admin') {
-				navigate('/');
+				navigate('/dashboard');
 			} else {
 				throw new Error('Tipo de utilizador desconhecido.');
 			}
@@ -78,7 +78,7 @@ const Login = () => {
 			} else if (role === 'doctor') {
 				navigate('/agenda');
 			} else if (role === 'admin') {
-				navigate('/');
+				navigate('/dashboard');
 			} else {
 				throw new Error('Tipo de utilizador desconhecido.');
 			}
