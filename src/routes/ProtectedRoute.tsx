@@ -16,7 +16,7 @@ export default function ProtectedRoute({ children, allowedRoles }: Props) {
 
 	const { user, role, loading } = authContext;
 
-	// Se estiver a carregar, mostra uma mensagem ou retorna null para não renderizar nada
+	
 	if (loading) {
 		return <p>A carregar autenticação...</p>;
 	}
@@ -27,7 +27,7 @@ export default function ProtectedRoute({ children, allowedRoles }: Props) {
 
 	if (!allowedRoles.includes(role || '')) {
 		console.warn(`Acesso negado para o role: ${role}. Rota requer: ${allowedRoles.join(', ')}`);
-		return <Navigate to='/' replace />; // Ou '/login' ou uma página de 'acesso negado'
+		return <Navigate to='/' replace />; 
 	}
 
 	return children;

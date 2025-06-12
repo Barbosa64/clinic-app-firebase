@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { db } from '../lib/firebase';
 import { collection, query, where, onSnapshot, orderBy } from 'firebase/firestore';
 
@@ -48,7 +48,7 @@ const ListaPrescricoes = ({ patientId }: Props) => {
 							<strong>Fármaco:</strong> {p.farmaco}
 						</p>
 						<p>
-							<strong>Data da Consulta:</strong> {p.consultaId}
+							<strong>Data da Consulta:</strong>
 						</p>
 						<p>
 							<strong>Dose:</strong> {p.dose}

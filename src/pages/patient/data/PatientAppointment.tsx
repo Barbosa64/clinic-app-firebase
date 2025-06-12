@@ -3,7 +3,7 @@ import { db } from '../../../lib/firebase';
 import { collection, query, where, getDocs, addDoc, Timestamp, doc, getDoc } from 'firebase/firestore';
 import { useAuth } from '../../../context/AuthContext';
 import { useParams } from 'react-router-dom';
-import { CalendarDaysIcon, UserIcon } from '@heroicons/react/24/outline';
+import { CalendarDaysIcon } from '@heroicons/react/24/outline';
 import { Stethoscope } from 'lucide-react';
 
 export default function PatientAppointment() {
@@ -162,13 +162,7 @@ export default function PatientAppointment() {
 
 				<div>
 					<label className='block mb-1 font-medium text-gray-700'>Data da Consulta:</label>
-					<input
-						type='datetime-local'
-						className='border w-full p-2 rounded'
-						value={appointmentDate}
-						onChange={e => setAppointmentDate(e.target.value)}
-						min={new Date().toISOString().slice(0, 16)} // evita data passada
-					/>
+					<input type='datetime-local' className='border w-full p-2 rounded' value={appointmentDate} onChange={e => setAppointmentDate(e.target.value)} min={new Date().toISOString().slice(0, 16)} />
 				</div>
 
 				<button type='submit' className='mt-4 w-full px-4 py-2 bg-teal-600 text-white font-medium rounded hover:bg-teal-700 transition' disabled={status === 'loading'}>
@@ -176,7 +170,6 @@ export default function PatientAppointment() {
 				</button>
 			</form>
 
-			{/* Histórico de Consultas */}
 			<div className='mt-10'>
 				<h2 className='text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-2'>
 					<Stethoscope className='w-6 h-6 text-teal-600' />

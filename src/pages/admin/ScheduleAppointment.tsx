@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../../lib/firebase';
 import { collection, query, where, getDocs, addDoc, Timestamp, doc, getDoc } from 'firebase/firestore';
 import { useAuth } from '../../context/AuthContext';
-import { CalendarDaysIcon, UserIcon } from '@heroicons/react/24/outline';
-import { Stethoscope } from 'lucide-react';
+import { CalendarDaysIcon } from '@heroicons/react/24/outline';
 
 export default function ScheduleAppointment() {
 	const [specialties, setSpecialties] = useState<string[]>([]);
