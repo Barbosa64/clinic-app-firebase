@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { Patient } from '../pages/patient/data/typesPatient';
-import { CalendarIcon, PhoneIcon, ShieldCheckIcon } from 'lucide-react'; // ✅ Novos ícones
+import { CalendarIcon, PhoneIcon, ShieldCheckIcon } from 'lucide-react';
+import { calcularIdade } from '../../utils/utilsIdade';
 
 type Props = {
 	id: string;
@@ -52,7 +53,7 @@ export default function PatientProfileCard({ id }: Props) {
 			<img className='h-24 w-24 rounded-full object-cover' src={patient.imageUrl || 'https://placehold.co/100x100?text=Avatar'} alt={patient.name} />
 			<h3 className='mt-3 text-xl font-semibold text-teal-700'>{patient.name}</h3>
 			<p className='text-gray-500 text-sm'>
-				{patient.gender} {patient.age ?? 'Idade desconhecida'}
+				{patient.gender} {calcularIdade(patient.birthDate) ?? 'Idade desconhecida'}
 			</p>
 			<div className='mt-4 space-y-3 text-sm text-gray-700 text-left w-full px-6'>
 				<p className='flex items-center gap-2'>

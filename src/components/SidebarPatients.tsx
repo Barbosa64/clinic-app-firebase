@@ -4,6 +4,7 @@ import { db } from '../lib/firebase';
 import { Patient } from '../pages/patient/data/typesPatient';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
+import { calcularIdade } from '../../utils/utilsIdade';
 
 export default function SidebarPatients() {
 	const [patients, setPatients] = useState<Patient[]>([]);
@@ -83,7 +84,7 @@ export default function SidebarPatients() {
 						<div className='min-w-0 flex-auto'>
 							<p className='text-sm font-semibold leading-6'>{patient.name}</p>
 							<p className='mt-1 truncate text-xs leading-5'>
-								{patient.gender} {patient.age}
+								{patient.gender}, {calcularIdade(patient.birthDate)}
 							</p>
 						</div>
 					</li>

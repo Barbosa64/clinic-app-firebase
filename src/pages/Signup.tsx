@@ -14,7 +14,6 @@ const Signup = () => {
 	const [gender, setGender] = useState<'Masculino' | 'Feminino' | 'Outro'>('Outro');
 	const [phone, setPhone] = useState('');
 	const [birthDate, setBirthDate] = useState('');
-	const [age, setAge] = useState('');
 	const role = 'patient';
 	const [error, setError] = useState('');
 	const navigate = useNavigate();
@@ -22,7 +21,7 @@ const Signup = () => {
 
 	const handleSignup = async () => {
 		setError('');
-		if (!name || !email || !password || !phone || !birthDate || !age) {
+		if (!name || !email || !password || !phone || !birthDate || !gender) {
 			setError('Por favor, preencha todos os campos obrigatórios.');
 			return;
 		}
@@ -40,10 +39,9 @@ const Signup = () => {
 				gender,
 				phone,
 				birthDate,
-				age,
 			});
 
-			navigate('/');
+			navigate('/dashboard/' + user.uid);
 		} catch (err: any) {
 			setError('Falhou o registo: ' + err.message);
 		}
@@ -101,14 +99,6 @@ const Signup = () => {
 							className='w-full bg-transparent text-lg placeholder:text-white border-b text-white border-white py-4 mb-4 outline-none'
 							value={birthDate}
 							onChange={e => setBirthDate(e.target.value)}
-							required
-						/>
-						<input
-							type='number'
-							placeholder='Idade'
-							className='w-full bg-transparent text-lg placeholder:text-white border-b text-white border-white py-4 mb-4 outline-none'
-							value={age}
-							onChange={e => setAge(e.target.value)}
 							required
 						/>
 						<input
