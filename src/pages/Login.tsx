@@ -91,9 +91,9 @@ const Login = () => {
 	};
 
 	return (
-		<div className='w-full h-screen flex'>
-			<div className="w-1/2 h-full flex flex-col items-center justify-center bg-[url('../assets/17818.jpg')] bg-cover bg-center"></div>
-			<div className='w-1/2 h-full bg-teal-600 flex flex-col p-20 justify-center'>
+		<div className='w-full h-screen flex flex-col md:flex-row'>
+			<div className="w-full md:w-1/2 h-64 md:h-full bg-[url('../assets/17818.jpg')] bg-cover bg-center"></div>
+			<div className='w-full md:w-1/2 h-full bg-teal-600 flex flex-col p-6 md:p-20 justify-center'>
 				<div className='w-full flex flex-col max-w-[450px] mx-auto'>
 					<div className='w-full flex flex-col mb-10 text-white'>
 						<h3 className='text-lg mb-4'>Bem vindo à Clinica*! Por favor insira os seus dados para começar.</h3>
