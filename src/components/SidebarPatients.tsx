@@ -26,7 +26,6 @@ export default function SidebarPatients() {
 					return;
 				}
 
-				// Pega o papel do usuário logado
 				const userDocRef = doc(db, 'users', user.uid);
 				const userDocSnap = await getDoc(userDocRef);
 

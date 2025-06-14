@@ -48,18 +48,15 @@ const Signup = () => {
 	};
 
 	return (
-		<div className='w-full h-screen flex'>
-			{/* Seção Esquerda (ilustração ou cor de fundo) */}
-			<div className="w-1/2 h-full flex flex-col items-center justify-center bg-[url('../assets/64.jpg')] bg-cover bg-center"></div>
+		<div className='w-full h-auto md:h-screen flex flex-col md:flex-row'>
+			<div className="w-full md:w-1/2 h-64 md:h-full flex flex-col items-center justify-center bg-[url('../assets/64.jpg')] bg-cover bg-center"></div>
 
-			{/* Seção Direita (formulário) */}
-			<div className='w-1/2 h-full bg-teal-600 flex flex-col p-20 justify-center'>
+			<div className='w-full md:w-1/2 h-full bg-teal-600 flex flex-col p-6 md:p-20 justify-center'>
 				<div className='w-full flex flex-col max-w-[450px] mx-auto'>
 					<div className='w-full flex flex-col mb-10 text-white'>
 						<h3 className='text-lg mb-4'>Crie a sua conta na Clinica* para começar.</h3>
 					</div>
 
-					{/* Inputs */}
 					<div className='w-full flex flex-col mb-6'>
 						<input
 							type='text'
@@ -135,10 +132,8 @@ const Signup = () => {
 						</select>
 					</div>
 
-					{/* Mensagem de erro */}
 					{error && <div className='text-red-500 mb-4'>{error}</div>}
 
-					{/* Botão */}
 					<div className='w-full flex flex-col mb-4'>
 						<button onClick={handleSignup} className='w-full bg-transparent border border-white text-white font-semibold rounded py-4 mb-4'>
 							Criar Conta
@@ -146,7 +141,6 @@ const Signup = () => {
 					</div>
 				</div>
 
-				{/* Link para login */}
 				<div className='w-full flex items-center justify-center mt-10'>
 					<p className='text-sm font-normal text-gray-800'>
 						Já tem conta?
