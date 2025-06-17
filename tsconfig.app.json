@@ -22,5 +22,5 @@
 		"noFallthroughCasesInSwitch": true,
 		"noUncheckedSideEffectImports": true
 	},
-	"include": ["src", "utils/ListaPrescricoes.ts"]
+	"include": ["src", "src/lib/ListaPrescricoes.ts"]
 }

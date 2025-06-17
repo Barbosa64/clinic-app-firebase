@@ -3,7 +3,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { Patient } from '../pages/patient/data/typesPatient';
 import { CalendarIcon, PhoneIcon, ShieldCheckIcon } from 'lucide-react';
-import { calcularIdade } from '../../utils/utilsIdade';
+import { calcularIdade } from '../lib/utilsIdade';
 
 type Props = {
 	id: string;

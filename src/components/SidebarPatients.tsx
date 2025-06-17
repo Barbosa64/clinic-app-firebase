@@ -4,7 +4,7 @@ import { db } from '../lib/firebase';
 import { Patient } from '../pages/patient/data/typesPatient';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
-import { calcularIdade } from '../../utils/utilsIdade';
+import { calcularIdade } from '../lib/utilsIdade';
 
 export default function SidebarPatients() {
 	const [patients, setPatients] = useState<Patient[]>([]);

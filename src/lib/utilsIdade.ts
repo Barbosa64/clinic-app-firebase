@@ -1,7 +1,6 @@
 export function calcularIdade(birthTimestamp: any): number {
 	if (!birthTimestamp) return 0;
 
-	// Se for Timestamp do Firebase, converte para Date
 	const birthDate = birthTimestamp.toDate ? birthTimestamp.toDate() : new Date(birthTimestamp);
 
 	const hoje = new Date();
