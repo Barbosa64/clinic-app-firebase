@@ -97,12 +97,13 @@ App will be available at:
 http://localhost:5173
 ```
 📦 Build for Production
-bash
+```
 npm run build
+```
 Output will be generated in:
 
-Código
 dist/
+
 ### 🔐 Firebase Storage Rules
 
 The project includes a storage.rules file:
