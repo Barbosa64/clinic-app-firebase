@@ -112,15 +112,8 @@ storage.rules
 
 
 ## 🌐 Deployment
-### You can deploy using:
 
 #### Netlify
-
-#### Vercel
-
-#### Firebase Hosting
-
-Example (Netlify deployment used in the project):
 
 https://clinicaprojetoflag.netlify.app/
 
