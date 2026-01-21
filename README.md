@@ -117,7 +117,7 @@ storage.rules
 
 https://clinicaprojetoflag.netlify.app/
 
-📚 Documentation & Help
+## 📚 Documentation & Help
 React Docs: https://react.dev
 
 Firebase Docs: https://firebase.google.com/docs
